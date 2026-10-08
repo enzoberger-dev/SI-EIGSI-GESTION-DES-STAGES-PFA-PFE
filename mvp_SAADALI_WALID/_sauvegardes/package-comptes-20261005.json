@@ -1,0 +1,14 @@
+{
+  "name": "gestion-stages-pfa-pfe",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Application de gestion des stages PFA/PFE de l’EIGSI Casablanca",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0"
+  }
+}

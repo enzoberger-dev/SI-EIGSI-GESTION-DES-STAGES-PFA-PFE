@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Connexion — Gestion des stages</title>
+    <link rel="stylesheet" href="/css/auth.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Gestion des stages PFA/PFE</a>
+    </header>
+    <main class="login-page">
+      <section class="login-card" aria-labelledby="login-title">
+        <p class="eyebrow">EIGSI Casablanca</p>
+        <h1 id="login-title">Se connecter</h1>
+        <p class="intro">Accédez à votre espace de gestion des stages.</p>
+        <p class="error-message" id="login-error" role="alert" hidden>Adresse e-mail ou mot de passe incorrect.</p>
+        <p class="success-message" id="logout-message" role="status" hidden>Vous êtes déconnecté.</p>
+        <form action="/login" method="post">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" name="email" type="email" autocomplete="username" required>
+          <label for="password">Mot de passe</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button class="button" type="submit">Se connecter</button>
+        </form>
+        <p class="help-text">Les comptes de cet environnement sont créés par l’équipe projet.</p>
+      </section>
+    </main>
+    <script>
+      const query = new URLSearchParams(window.location.search);
+      document.getElementById('login-error').hidden = query.get('error') !== 'invalid';
+      document.getElementById('logout-message').hidden = query.get('logout') !== '1';
+    </script>
+  </body>
+</html>

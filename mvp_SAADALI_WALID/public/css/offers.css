@@ -1,0 +1,121 @@
+.offer-form,
+.application-form,
+.decision-form {
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+  margin: 24px 0;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #dce4eb;
+  border-radius: 8px;
+}
+
+.offer-form input,
+.offer-form select,
+.offer-form textarea,
+.application-form textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #aebdca;
+  border-radius: 5px;
+  font: inherit;
+}
+
+.offer-form textarea,
+.application-form textarea {
+  resize: vertical;
+}
+
+.offer-form .button,
+.application-form .button,
+.decision-form .button {
+  justify-self: start;
+}
+
+.offer-section,
+.offer-list,
+.application-list {
+  margin-top: 32px;
+}
+
+.offer-table-wrap {
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #dce4eb;
+  border-radius: 8px;
+}
+
+.offer-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.offer-table-wrap th,
+.offer-table-wrap td {
+  padding: 12px;
+  border-bottom: 1px solid #e5ebf0;
+  vertical-align: top;
+}
+
+.offer-table-wrap th {
+  color: #314e66;
+  background: #edf3f7;
+  font-size: 13px;
+}
+
+.offer-card,
+.application-card {
+  margin: 16px 0;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #dce4eb;
+  border-radius: 8px;
+}
+
+.offer-card h2,
+.application-card h2 {
+  margin-top: 4px;
+}
+
+.offer-type {
+  margin-bottom: 0;
+  color: #52687b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.offer-description {
+  white-space: pre-wrap;
+}
+
+.application-form,
+.decision-form {
+  max-width: 620px;
+  margin-bottom: 0;
+  padding: 16px;
+  background: #f8fafb;
+}
+
+.decision-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.application-state {
+  margin-bottom: 0;
+  padding: 12px;
+  background: #edf3f7;
+  border-radius: 5px;
+}
+
+@media (max-width: 560px) {
+  .offer-card,
+  .application-card {
+    padding: 16px;
+  }
+}
