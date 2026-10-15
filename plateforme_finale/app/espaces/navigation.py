@@ -14,7 +14,7 @@ def menu(request):
     """Variable `menu` : liste de groupes {titre, liens: [{texte, adresse, actif}]}. Vide si pas connecté."""
     utilisateur = getattr(request, "user", None)
     if utilisateur is None or not utilisateur.is_authenticated:
-        return {"menu": [], "initiales": ""}
+        return {"menu": [], "initiales": "", "assistant_ia_active": False}
 
     # Import ici (et non en haut du fichier) pour éviter un import circulaire au démarrage
     from .views import ESPACES, LIENS
@@ -37,4 +37,6 @@ def menu(request):
     nom = utilisateur.get_full_name() or utilisateur.email or ""
     morceaux = [m for m in nom.replace("@", " ").replace(".", " ").split() if m]
     initiales = "".join(m[0] for m in morceaux[:2]).upper()
-    return {"menu": groupes, "initiales": initiales}
+    from . import assistant as assistant_ia   # import ici : même raison que ci-dessus
+    return {"menu": groupes, "initiales": initiales,
+            "assistant_ia_active": assistant_ia.lire_cle() is not None}

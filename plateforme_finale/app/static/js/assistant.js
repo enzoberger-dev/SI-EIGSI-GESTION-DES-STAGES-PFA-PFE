@@ -50,6 +50,16 @@
     var url = racine.getAttribute("data-url");
 
     bulle.hidden = false;
+    var statut = racine.querySelector(".assistant-statut");
+    var texteStatut = racine.querySelector(".statut-texte");
+    var TEXTES = { ia: "IA en ligne", demo: "IA · mode démo", hors: "IA indisponible" };
+    function majStatut(valeur) {                     /* voyant : vert = en ligne, orange = mode démo, rouge = indisponible */
+      racine.setAttribute("data-statut", valeur);
+      texteStatut.textContent = TEXTES[valeur];
+      statut.setAttribute("title", valeur === "ia" ? "L'IA répond normalement" :
+        valeur === "demo" ? "Sans IA : réponses tirées de la page d'aide" : "Le service ne répond pas pour le moment");
+    }
+    majStatut(racine.getAttribute("data-statut") || "demo");
 
     var accueil = "Bonjour ! Je peux vous aider à utiliser le site. Posez-moi une question.";
 
@@ -74,16 +84,22 @@
       etat = nouveau;
       racine.setAttribute("data-etat", etat);
       var ouvert = etat !== "ferme";
-      bulle.hidden = ouvert;
+      /* La bulle et la fenêtre restent dans la page : c'est le CSS qui les fait grandir ou rétrécir (zoom animé) */
+      bulle.tabIndex = ouvert ? -1 : 0;
+      bulle.setAttribute("aria-hidden", ouvert ? "true" : "false");
       bulle.setAttribute("aria-expanded", ouvert ? "true" : "false");
+      fenetre.inert = !ouvert;
       agrandir.setAttribute("aria-label", etat === "grand" ? "Réduire la fenêtre" : "Agrandir la fenêtre");
       ecrire("assistant_etat", etat);
     }
 
     messages.forEach(dessiner);
     if (!messages.length) { dessiner({ de: "assistant", texte: accueil }); }
+    /* Au chargement d'une page, on rétablit l'état sans animation (sinon la fenêtre « se rouvre » à chaque page) */
+    racine.classList.add("immediat");
     afficherEtat(etat);
     if (etat !== "ferme") { fil.scrollTop = fil.scrollHeight; }
+    requestAnimationFrame(function () { requestAnimationFrame(function () { racine.classList.remove("immediat"); }); });
 
     bulle.addEventListener("click", function () { afficherEtat("normal"); zone.focus(); });
     fermer.addEventListener("click", function () { afficherEtat("ferme"); bulle.focus(); });
@@ -104,13 +120,17 @@
       messages.push(moi); dessiner(moi);
       zone.value = "";
       envoyer.disabled = true;
-      var attente = dessiner({ de: "assistant", texte: "…" });
+      var attente = dessiner({ de: "assistant", texte: "" });
+      attente.classList.add("msg-attente");
+      for (var i = 0; i < 3; i++) { attente.appendChild(document.createElement("span")); }   /* trois points qui pulsent */
       post(url, { question: question }).then(function (r) {
         var rep = { de: "assistant", texte: r.texte, mention: mention(r.mode) };
         attente.remove(); messages.push(rep); dessiner(rep);
+        majStatut(r.mode === "ia" ? "ia" : "demo");
       }).catch(function () {
         var rep = { de: "assistant", texte: "L'assistant n'est pas disponible pour le moment. Consultez la page « À propos et aide »." };
         attente.remove(); messages.push(rep); dessiner(rep);
+        majStatut("hors");
       }).then(function () { envoyer.disabled = false; sauver(); zone.focus(); });
     });
   }
