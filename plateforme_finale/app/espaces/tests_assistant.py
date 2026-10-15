@@ -180,6 +180,16 @@ class PagesTests(BaseTest):
         for page in ("accueil", "aide"):
             self.assertContains(self.client.get(reverse(page)), 'id="assistant-widget"')
 
+    def test_la_bulle_porte_l_identifiant_du_compte_pour_separer_les_conversations(self):
+        a = utilisateur("a@example.test", roles.ETUDIANT)
+        b = utilisateur("b@example.test", roles.ETUDIANT)
+        self.client.force_login(a)
+        self.assertContains(self.client.get(reverse("accueil")), f'data-utilisateur="{a.pk}"')
+        self.client.force_login(b)
+        page = self.client.get(reverse("accueil"))
+        self.assertContains(page, f'data-utilisateur="{b.pk}"')
+        self.assertNotContains(page, f'data-utilisateur="{a.pk}"')
+
     def test_aucun_nom_de_modele_d_ia_a_l_ecran(self):
         self.client.force_login(utilisateur("p7@example.test", roles.ETUDIANT))
         for page in ("accueil", "aide"):

@@ -33,6 +33,20 @@
   function ecrire(cle, valeur) {
     try { sessionStorage.setItem(cle, JSON.stringify(valeur)); } catch (e) { /* stockage bloqué : tant pis */ }
   }
+  /* La conversation appartient à UN compte : on efface celle des autres comptes (et tout, à la déconnexion).
+     Sans cela, changer de compte dans le même onglet montrerait la conversation de la personne précédente. */
+  function purger(compteAGarder) {
+    try {
+      Object.keys(sessionStorage).forEach(function (cle) {
+        if (cle.indexOf("assistant_") === 0 && (compteAGarder === null || !cle.endsWith("_" + compteAGarder))) {
+          sessionStorage.removeItem(cle);
+        }
+      });
+    } catch (e) { /* stockage bloqué : rien à effacer */ }
+  }
+  document.querySelectorAll("form[action*='/deconnexion/']").forEach(function (f) {
+    f.addEventListener("submit", function () { purger(null); });
+  });
 
   /* ---------------------------------------------------------------- la bulle */
   var racine = document.getElementById("assistant-widget");
@@ -45,8 +59,11 @@
     var envoyer = formulaire.querySelector(".bouton");
     var agrandir = racine.querySelector(".assistant-agrandir");
     var fermer = racine.querySelector(".assistant-fermer");
-    var messages = lire("assistant_fil", []);
-    var etat = lire("assistant_etat", "ferme");   // ferme (bulle), normal, grand
+    var compte = racine.getAttribute("data-utilisateur") || "0";
+    purger(compte);                                 // la conversation d'un autre compte ne doit jamais apparaître
+    var CLE_FIL = "assistant_fil_" + compte, CLE_ETAT = "assistant_etat_" + compte;
+    var messages = lire(CLE_FIL, []);
+    var etat = lire(CLE_ETAT, "ferme");   // ferme (bulle), normal, grand
     var url = racine.getAttribute("data-url");
 
     bulle.hidden = false;
@@ -78,7 +95,7 @@
       return p;
     }
 
-    function sauver() { ecrire("assistant_fil", messages.slice(-20)); }
+    function sauver() { ecrire(CLE_FIL, messages.slice(-20)); }
 
     function afficherEtat(nouveau) {
       etat = nouveau;
@@ -90,7 +107,7 @@
       bulle.setAttribute("aria-expanded", ouvert ? "true" : "false");
       fenetre.inert = !ouvert;
       agrandir.setAttribute("aria-label", etat === "grand" ? "Réduire la fenêtre" : "Agrandir la fenêtre");
-      ecrire("assistant_etat", etat);
+      ecrire(CLE_ETAT, etat);
     }
 
     messages.forEach(dessiner);
