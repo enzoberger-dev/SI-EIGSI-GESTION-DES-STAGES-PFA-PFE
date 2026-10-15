@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block titre %}Page introuvable{% endblock %}
+{% block contenu %}
+  <h1>Page introuvable</h1>
+  <p>Cette adresse n'existe pas, ou la page a été déplacée.</p>
+  <p class="retour"><a class="bouton" href="{% url 'accueil' %}">Retour à l'accueil</a></p>
+{% endblock %}

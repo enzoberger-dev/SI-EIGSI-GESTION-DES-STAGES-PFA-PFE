@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block titre %}PV de soutenance{% endblock %}
+{% block contenu %}
+  <h1>PV de soutenance</h1>
+  <p>
+    <strong>{{ soutenance.stage.etudiant.get_full_name|default:soutenance.stage.etudiant.email }}</strong>
+    — {{ soutenance.stage.type_stage }} chez {{ soutenance.stage.entreprise }}<br>
+    {{ soutenance.debut|date:"l d/m/Y H:i" }}, salle {{ soutenance.salle }} ·
+    jury : {% for m in soutenance.jury.all %}{{ m.get_full_name|default:m.email }}{% if not forloop.last %}, {% endif %}{% endfor %}<br>
+    <small>Sujet : {{ soutenance.stage.sujet|truncatewords:40 }}</small>
+  </p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+  {% if dernier_renvoi and modifiable %}<p class="erreur">Renvoyé par le Career Center : « {{ dernier_renvoi.commentaire }} »</p>{% endif %}
+
+  {% if modifiable %}
+    <form method="post">{% csrf_token %}
+      <label>Note sur 20 (obligatoire) <input name="note" required value="{{ saisie.note }}" inputmode="decimal" class="etroit"></label>
+      <label>Procès-verbal (obligatoire : déroulement, appréciations, décision du jury)
+        <textarea name="pv" rows="12" required>{{ saisie.pv }}</textarea></label>
+      <button class="bouton">Enregistrer le PV et la note</button>
+    </form>
+    <p><small>Vous pouvez corriger le PV tant que le Career Center ne l'a pas validé.</small></p>
+  {% else %}
+    <p class="succes">PV validé le {{ soutenance.pv_valide_le|date:"d/m/Y" }} : il n'est plus modifiable.</p>
+    <p><strong>Note : {{ soutenance.note }}/20</strong></p>
+    <p class="pre">{{ soutenance.pv }}</p>
+  {% endif %}
+  <p class="retour"><a href="{% url 'jury_accueil' %}">← Retour à mes soutenances</a></p>
+{% endblock %}

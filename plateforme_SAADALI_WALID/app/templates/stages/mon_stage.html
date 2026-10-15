@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block titre %}Mon stage{% endblock %}
+{% block classe_page %}page-libre{% endblock %}
+{% block contenu %}
+  <h1>Mon stage</h1>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}" role="status">{{ message }}</p>
+  {% endfor %}
+
+  {% if not inscription %}
+    <div class="vide">
+      <strong>Vous n'êtes inscrit dans aucune promotion cette année</strong>
+      Contactez le Career Center.
+    </div>
+
+  {% elif not stage %}
+    <div class="action-suivante">
+      <div>
+        <h2>{{ action.titre }}</h2>
+        <p>{{ inscription.promotion }} : stage <strong>{{ inscription.promotion.type_stage }}</strong>
+           (au moins {{ inscription.promotion.duree_min_semaines }} semaines). Vous n'avez pas encore déclaré de stage.</p>
+      </div>
+      <a class="bouton" href="{% url 'modifier_mon_stage' %}">Déclarer mon stage</a>
+    </div>
+    {% include "stages/_frise.html" %}
+
+  {% else %}
+    <div class="action-suivante{% if action.ok %} ok{% endif %}">
+      <div>
+        <h2>{{ action.titre }}</h2>
+        <p>{{ action.texte }}</p>
+      </div>
+      {% if action.bouton %}
+        <a class="bouton" href="{% if action.nom_url|slice:':1' == '#' %}{{ action.nom_url }}{% else %}{% url action.nom_url %}{% endif %}">{{ action.bouton }}</a>
+      {% endif %}
+    </div>
+
+    {% include "stages/_frise.html" %}
+
+    <section class="carte" aria-labelledby="titre-fiche">
+      <h2 id="titre-fiche">Ma fiche <span class="badge {% if stage.statut == 'VALIDE' %}badge-ok{% elif stage.statut == 'REFUSE' %}badge-refus{% elif stage.statut == 'SOUMIS' %}badge-attente{% else %}badge-neutre{% endif %}">{{ stage.get_statut_display }}</span></h2>
+      <p class="sr-seul"><strong>Statut : {{ stage.get_statut_display }}</strong></p>
+      <table>
+        <tr><th>Type</th><td>{{ stage.type_stage }} ({{ stage.promotion }})</td></tr>
+        <tr><th>Entreprise</th><td>{{ stage.entreprise|default:"—" }}</td></tr>
+        <tr><th>Sujet</th><td>{{ stage.sujet|default:"—"|linebreaksbr }}</td></tr>
+        <tr><th>Dates</th><td>{{ stage.date_debut|date:"d/m/Y"|default:"?" }} → {{ stage.date_fin|date:"d/m/Y"|default:"?" }}
+            {% if stage.duree_semaines %}({{ stage.duree_semaines }} semaines){% endif %}</td></tr>
+        <tr><th>Tuteur</th><td>{{ stage.tuteur_nom|default:"—" }}</td></tr>
+        <tr><th>Validé par</th><td>{% if valideur %}{{ valideur.get_full_name }}{% else %}<span class="erreur">personne pour l'instant</span>{% endif %}</td></tr>
+      </table>
+      {% if modifiable %}
+        {% if a_completer %}
+          <p>Avant de pouvoir soumettre :</p>
+          <ul>{% for e in a_completer %}<li class="erreur">{{ e }}</li>{% endfor %}</ul>
+        {% else %}
+          <p class="succes">Votre fiche est complète : vous pouvez la soumettre.</p>
+        {% endif %}
+        <p><a class="bouton" href="{% url 'modifier_mon_stage' %}">Modifier / soumettre ma fiche</a></p>
+      {% endif %}
+    </section>
+
+    {% if convention %}
+      <section class="carte" id="convention" aria-labelledby="titre-convention">
+        <h2 id="titre-convention">Ma convention n° {{ convention.numero }}</h2>
+        <p><span class="badge {% if convention.statut == 'SIGNEE' %}badge-ok{% else %}badge-attente{% endif %}">{{ convention.get_statut_display }}</span></p>
+        {% if convention.statut == "GENEREE" %}
+          <p>Le Career Center la fait signer par le directeur des études, puis vous l'envoie.</p>
+        {% elif convention.statut == "ENVOYEE" %}
+          <p><a href="{% url 'telecharger_convention' convention.pk 'pdf' %}">Télécharger ma convention (PDF)</a></p>
+          <p>Faites-la signer par l'entreprise et signez-la, puis déposez le scan (PDF, JPG ou PNG, 10 Mo maximum) :</p>
+          {% if convention.scan_signe %}<p class="succes">Scan déposé le {{ convention.scan_depose_le|date:"d/m/Y H:i" }}, en attente de vérification. Vous pouvez le remplacer :</p>{% endif %}
+          <form method="post" action="{% url 'deposer_scan_convention' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="scan" accept=".pdf,.jpg,.jpeg,.png" required aria-label="Scan de la convention signée">
+            <button type="submit" class="bouton">Déposer le scan</button>
+          </form>
+        {% elif convention.statut == "SIGNEE" %}
+          <p class="succes">Signée par toutes les parties le {{ convention.signee_le|date:"d/m/Y" }}.</p>
+          <p><a href="{% url 'telecharger_convention' convention.pk 'pdf' %}">PDF</a> · <a href="{% url 'telecharger_convention' convention.pk 'scan' %}">Scan signé</a></p>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    {% if stage.soutenance.debut and stage.soutenance.statut != "PROPOSEE" %}
+      <section class="carte" aria-labelledby="titre-soutenance">
+        <h2 id="titre-soutenance">Ma soutenance</h2>
+        <p><strong>{{ stage.soutenance.debut|date:"l d/m/Y" }} à {{ stage.soutenance.debut|date:"H:i" }}</strong>, salle {{ stage.soutenance.salle }}
+           ({{ stage.soutenance.campagne.duree_minutes }} min).<br>
+           Jury : {% for m in stage.soutenance.jury.all %}{{ m.get_full_name|default:m.email }}{% if not forloop.last %}, {% endif %}{% endfor %}.</p>
+      </section>
+    {% endif %}
+
+    {% if livrables %}
+      <section class="carte" aria-labelledby="titre-livrables">
+        <h2 id="titre-livrables">Mes livrables (à rendre sur Moodle)</h2>
+        <div class="defilement">
+          <table>
+            <tr><th>Livrable</th><th>Date limite</th><th>Statut</th></tr>
+            {% for l in livrables %}
+              <tr>
+                <td>{{ l.nom }}{% if l.lien_moodle %}<br><small><a href="{{ l.lien_moodle }}">Ouvrir le devoir sur Moodle</a></small>{% endif %}</td>
+                <td>{{ l.date_limite|date:"d/m/Y" }}</td>
+                <td>
+                  {% if l.statut == "RENDU" %}<span class="badge badge-ok">Rendu le {{ l.rendu_le|date:"d/m/Y" }}</span>
+                  {% elif l.date_limite < aujourdhui %}<span class="badge badge-refus">En retard</span>
+                  {% else %}<span class="badge badge-neutre">À rendre</span>{% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+        <p><small>Des rappels par e-mail vous sont envoyés avant chaque date limite. Le Career Center enregistre
+           vos livrables comme « rendus » après vérification sur Moodle.</small></p>
+      </section>
+    {% endif %}
+
+    <section class="carte" aria-labelledby="titre-historique">
+      <h2 id="titre-historique">Historique</h2>
+      <ul class="historique">
+        {% for h in historique %}
+          <li><span class="date">{{ h.date|date:"d/m/Y H:i" }}</span> — {{ h.get_action_display }}
+              {% if h.auteur %}par {{ h.auteur.get_full_name|default:h.auteur.email }}{% endif %}
+              {% if h.commentaire %}: <em>{{ h.commentaire }}</em>{% endif %}</li>
+        {% empty %}
+          <li>Aucun événement.</li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'espace-etudiant' %}">← Retour à mon espace</a></p>
+{% endblock %}

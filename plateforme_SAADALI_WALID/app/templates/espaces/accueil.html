@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block titre %}Accueil{% endblock %}
+{% block classe_page %}page-libre{% endblock %}
+{% block contenu %}
+  <h1>Bonjour {{ user.first_name|default:user.email }}</h1>
+  {% if mes_espaces %}
+    <p>Vos espaces :</p>
+    <div class="grille">
+      {% for e in mes_espaces %}
+        <a class="carte" href="/{{ e.adresse }}/">
+          <p class="carte-titre">Espace</p>
+          <h2>{{ e.titre }}</h2>
+          <p>{{ e.phrase }}</p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="vide">
+      <strong>Aucun rôle ne vous est encore attribué</strong>
+      Contactez le Service Stages.
+    </div>
+  {% endif %}
+  {% if user.is_staff %}
+    <p><a href="{% url 'admin:index' %}">Administration</a></p>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{# Frise des 5 étapes du stage. Reçoit la variable `frise` (voir stages/frise.py). #}
+<nav class="carte" aria-label="Avancement de mon dossier">
+  <ol class="frise">
+    {% for e in frise %}
+      <li class="{% if e.etat == 'fait' %}fait{% elif e.etat == 'courant' %}courant{% elif e.etat == 'refus' %}refus{% endif %}" style="--i: {{ e.indice }}"{% if e.etat == 'courant' or e.etat == 'refus' %} aria-current="step"{% endif %}>
+        {{ e.libelle }}<span class="sr-seul"> ({% if e.etat == 'fait' %}terminé{% elif e.etat == 'courant' %}en cours{% elif e.etat == 'refus' %}à corriger{% else %}à venir{% endif %})</span>
+      </li>
+    {% endfor %}
+  </ol>
+</nav>

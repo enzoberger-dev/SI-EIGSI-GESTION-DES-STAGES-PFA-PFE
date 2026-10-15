@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titre %}Mes disponibilités{% endblock %}
+{% block contenu %}
+  <h1>Mes disponibilités : {{ campagne.nom }}</h1>
+  <p><small>Cochez tous les créneaux de {{ campagne.duree_minutes }} minutes où vous êtes disponible. Le planning sera
+     proposé à partir des réponses de tous les membres du jury.</small></p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+  {% if a_repondu %}<p class="succes">Vous avez déjà répondu : vous pouvez modifier votre réponse.</p>{% endif %}
+  {% if not ouverte %}<p class="erreur">Le sondage est clos : les disponibilités ne sont plus modifiables.</p>{% endif %}
+
+  <form method="post">{% csrf_token %}
+    {% for jour, creneaux in jours.items %}
+      <fieldset>
+        <legend>{{ jour|date:"l d/m/Y" }}</legend>
+        {% for c in creneaux %}
+          <label class="creneau">
+            <input type="checkbox" name="creneau" value="{{ c.cle }}" {% if c.coche %}checked{% endif %} {% if not ouverte %}disabled{% endif %}>
+            {{ c.heure|date:"H:i" }}
+          </label>
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+    {% if ouverte %}<button class="bouton">Enregistrer mes disponibilités</button>{% endif %}
+  </form>
+  <p>{% if not jours %}Cette campagne n'a aucun créneau.{% endif %}<a href="{% url 'jury_accueil' %}">← Retour à mon espace</a></p>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titre %}Stages à valider{% endblock %}
+{% block contenu %}
+  <h1>Stages à valider</h1>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  {% if a_traiter %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Type</th><th>Entreprise</th><th>Dates</th><th>Soumise le</th><th></th></tr>
+      {% for stage in a_traiter %}
+        <tr>
+          <td>{{ stage.etudiant.get_full_name|default:stage.etudiant.email }}</td>
+          <td>{{ stage.type_stage }}</td>
+          <td>{{ stage.entreprise }}</td>
+          <td>{{ stage.date_debut|date:"d/m/Y" }} → {{ stage.date_fin|date:"d/m/Y" }}</td>
+          <td>{{ stage.modifie_le|date:"d/m/Y" }}</td>
+          <td><a class="bouton" href="{% url 'decider' stage.pk %}">Examiner</a></td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucune fiche n'attend votre décision.</p>
+  {% endif %}
+
+  {% if mes_decisions %}
+    <h2>Mes dernières décisions</h2>
+    <ul>
+      {% for h in mes_decisions %}
+        <li>{{ h.date|date:"d/m/Y H:i" }} — {{ h.get_action_display }} :
+            {{ h.stage.etudiant.get_full_name }} ({{ h.stage.entreprise }})
+            {% if h.commentaire %}— <em>{{ h.commentaire }}</em>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'accueil' %}">← Retour à mes espaces</a></p>
+{% endblock %}

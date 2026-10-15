@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titre %}Affecter les encadrants{% endblock %}
+{% block contenu %}
+  <h1>Affecter les encadrants</h1>
+  <p>Étudiants de 4e et 5e année, année {{ annee }}.
+     {% if nb_sans_encadrant %}<strong>{{ nb_sans_encadrant }} sans encadrant.</strong>{% endif %}</p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  {% if lignes %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Promotion</th><th>Encadrant actuel</th><th>Affecter / changer</th></tr>
+      {% for ligne in lignes %}
+        <tr>
+          <td>{{ ligne.etudiant.get_full_name|default:ligne.etudiant.email }}</td>
+          <td>{{ ligne.promotion }}</td>
+          <td>{% if ligne.encadrant %}{{ ligne.encadrant.get_full_name }}{% else %}<span class="erreur">aucun</span>{% endif %}</td>
+          <td>
+            <form method="post">
+              {% csrf_token %}
+              {{ ligne.form.etudiant }}
+              {{ ligne.form.encadrant }}
+              <button type="submit">{% if ligne.encadrant %}Changer{% else %}Affecter{% endif %}</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucun étudiant inscrit en 4e ou 5e année cette année. Les inscriptions se font dans l'administration (Promotions).</p>
+  {% endif %}
+
+  {% if derniers_changements %}
+    <h2>Derniers changements</h2>
+    <ul>
+      {% for a in derniers_changements %}
+        <li>{{ a.date_affectation|date:"d/m/Y H:i" }} — {{ a.etudiant.get_full_name }} → {{ a.encadrant.get_full_name }}
+            {% if a.affecte_par %}(par {{ a.affecte_par.get_full_name }}){% endif %}
+            {% if not a.active %}<em>— remplacée</em>{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

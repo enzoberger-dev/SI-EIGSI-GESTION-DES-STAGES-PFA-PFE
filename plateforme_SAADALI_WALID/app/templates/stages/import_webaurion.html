@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titre %}Import WebAurion{% endblock %}
+{% block contenu %}
+  <h1>Importer des étudiants et encadrants (WebAurion)</h1>
+  <p><small>Dans WebAurion, exportez la liste voulue avec « Exporter les données au format CSV UTF-8 standard »,
+     puis déposez le fichier ici. Titres de colonnes attendus : <strong>Nom, Prénom, E-mail, Code.Groupe</strong>
+     (et <strong>Rôle</strong> : « Étudiant » par défaut, ou « Encadrant »). Le code de groupe
+     (ex. <code>INGE_4_FISE_CA_2627</code>) donne l'année d'études et l'année universitaire.
+     Les comptes déjà existants ne sont jamais modifiés.</small></p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <form method="post" enctype="multipart/form-data">{% csrf_token %}
+    <input type="file" name="fichier" accept=".csv,text/csv" required class="large">
+    <label class="marge-haut"><input type="checkbox" name="simuler" value="1" checked>
+      Vérifier seulement (simulation : rien n'est enregistré)</label>
+    <button class="bouton">Lancer</button>
+  </form>
+
+  {% if rapport %}
+    {% include "stages/_rapport.html" %}
+    {% if rapport.comptes %}
+      <h3>{% if rapport.simulation %}Comptes qui seraient créés{% else %}Comptes créés : mots de passe provisoires{% endif %}</h3>
+      {% if not rapport.simulation %}
+        <p class="erreur"><strong>Notez ou copiez ce tableau maintenant :</strong> les mots de passe ne sont enregistrés
+           nulle part et ne seront plus affichés. Transmettez-les à chaque personne par un canal sûr.</p>
+      {% endif %}
+      <div class="defilement"><table>
+        <tr><th>E-mail</th><th>Nom</th>{% if not rapport.simulation %}<th>Mot de passe provisoire</th>{% endif %}</tr>
+        {% for email, nom, mot_de_passe in rapport.comptes %}
+          <tr><td>{{ email }}</td><td>{{ nom }}</td>{% if not rapport.simulation %}<td><code>{{ mot_de_passe }}</code></td>{% endif %}</tr>
+        {% endfor %}
+      </table></div>
+    {% endif %}
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

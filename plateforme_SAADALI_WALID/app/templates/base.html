@@ -1,0 +1,70 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plateforme de gestion des stages PFA et PFE de l'EIGSI Casablanca.">
+  <meta name="theme-color" content="#0064b0">
+  <title>{% block titre %}Gestion des stages{% endblock %} · EIGSI</title>
+  <link rel="icon" type="image/png" href="{% static 'img/logo-eigsi.png' %}">
+  <link rel="stylesheet" href="{% static 'css/eigsi.css' %}">
+</head>
+<body>
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
+  {% block cadre %}
+    <div class="cadre{% if not user.is_authenticated %} cadre-public{% endif %}">
+      {% if user.is_authenticated %}
+        <aside class="menu" id="menu" aria-label="Navigation principale">
+          <div class="menu-marque">
+            <a href="{% url 'accueil' %}" aria-label="EIGSI Casablanca, retour à l'accueil">
+              <img src="{% static 'img/logo-eigsi.png' %}" width="168" height="71" alt="EIGSI, école d'ingénieurs Casablanca">
+            </a>
+          </div>
+          <nav class="menu-nav">
+            {% for groupe in menu %}
+              {% if groupe.titre %}<p class="menu-titre">{{ groupe.titre }}</p>{% endif %}
+              <ul>
+                {% for l in groupe.liens %}
+                  <li><a href="{{ l.adresse }}"{% if l.actif %} aria-current="page"{% endif %}><span class="pastille" aria-hidden="true"></span>{{ l.texte }}</a></li>
+                {% endfor %}
+              </ul>
+            {% endfor %}
+          </nav>
+          <div class="menu-pied">
+            <div class="qui">
+              <span class="avatar" aria-hidden="true">{{ initiales|default:"?" }}</span>
+              <div class="nom">{{ user.get_full_name|default:user.email }}<br><a href="{% url 'password_change' %}">Mon mot de passe</a></div>
+            </div>
+            {# La déconnexion se fait par un formulaire (méthode POST), règle de sécurité de Django #}
+            <form method="post" action="{% url 'deconnexion' %}">
+              {% csrf_token %}
+              <button type="submit">Se déconnecter</button>
+            </form>
+          </div>
+        </aside>
+      {% endif %}
+      <div class="zone">
+        {% if user.is_authenticated %}
+          <div class="barre-mobile">
+            <a href="{% url 'accueil' %}"><img src="{% static 'img/logo-eigsi.png' %}" width="85" height="36" alt="EIGSI"></a>
+            <button type="button" class="menu-bouton" aria-expanded="false" aria-controls="menu" aria-label="Ouvrir le menu"><span></span></button>
+          </div>
+        {% else %}
+          {# Visiteur non connecté (page de protection des données, par exemple) : simple bandeau avec le logo #}
+          <div class="barre-publique">
+            <a href="{% url 'accueil' %}"><img src="{% static 'img/logo-eigsi.png' %}" width="106" height="45" alt="EIGSI Casablanca"></a>
+            <a href="{% url 'connexion' %}">Se connecter</a>
+          </div>
+        {% endif %}
+        <main id="contenu">
+          <div class="page {% block classe_page %}page-carte{% endblock %}">
+            {% block contenu %}{% endblock %}
+          </div>
+        </main>
+        <footer class="pied"><a href="{% url 'protection_donnees' %}">Protection des données personnelles</a></footer>
+      </div>
+    </div>
+  {% endblock %}
+  <script src="{% static 'js/eigsi.js' %}" defer></script>
+</body>
+</html>

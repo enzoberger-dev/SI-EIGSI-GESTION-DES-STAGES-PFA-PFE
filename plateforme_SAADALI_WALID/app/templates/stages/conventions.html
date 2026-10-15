@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block titre %}Conventions{% endblock %}
+{% block contenu %}
+  <h1>Conventions de stage</h1>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <h2>1. Stages validés, convention à générer ({{ a_generer|length }})</h2>
+  {% if a_generer %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Type</th><th>Entreprise</th><th>Dates</th><th></th></tr>
+      {% for stage in a_generer %}
+        <tr>
+          <td>{{ stage.etudiant.get_full_name|default:stage.etudiant.email }}</td>
+          <td>{{ stage.type_stage }}</td>
+          <td>{{ stage.entreprise }}</td>
+          <td>{{ stage.date_debut|date:"d/m/Y" }} → {{ stage.date_fin|date:"d/m/Y" }}</td>
+          <td><form method="post" action="{% url 'convention_generer' stage.pk %}">{% csrf_token %}<button class="bouton">Générer la convention</button></form></td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}<p>Aucun stage validé en attente de convention.</p>{% endif %}
+
+  <h2>2. À faire signer par le directeur des études ({{ a_faire_signer|length }})</h2>
+  <p><small>Téléchargez le PDF, faites-le signer par le directeur, puis cliquez sur « Envoyer à l'étudiant ».</small></p>
+  {% if a_faire_signer %}
+    <div class="defilement"><table>
+      <tr><th>N°</th><th>Étudiant</th><th>PDF</th><th></th></tr>
+      {% for c in a_faire_signer %}
+        <tr>
+          <td>{{ c.numero }} (v{{ c.version }})</td>
+          <td>{{ c.stage.etudiant.get_full_name }}</td>
+          <td><a href="{% url 'telecharger_convention' c.pk 'pdf' %}">Télécharger</a></td>
+          <td>
+            <form method="post" action="{% url 'convention_envoyer' c.pk %}" class="en-ligne">{% csrf_token %}<button class="bouton">Envoyer à l'étudiant</button></form>
+            <form method="post" action="{% url 'convention_generer' c.stage.pk %}" class="en-ligne">{% csrf_token %}<button>Régénérer</button></form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}<p>Aucune.</p>{% endif %}
+
+  <h2>3. Chez l'étudiant : scan à déposer ou à vérifier ({{ chez_etudiant|length }})</h2>
+  {% if chez_etudiant %}
+    <div class="defilement"><table>
+      <tr><th>N°</th><th>Étudiant</th><th>Envoyée le</th><th>Scan</th><th></th></tr>
+      {% for c in chez_etudiant %}
+        <tr>
+          <td>{{ c.numero }} (v{{ c.version }})</td>
+          <td>{{ c.stage.etudiant.get_full_name }}</td>
+          <td>{{ c.envoyee_le|date:"d/m/Y" }}</td>
+          <td>{% if c.scan_signe %}<a href="{% url 'telecharger_convention' c.pk 'scan' %}">Voir le scan</a> (déposé le {{ c.scan_depose_le|date:"d/m/Y H:i" }}){% else %}<em>pas encore déposé</em>{% endif %}</td>
+          <td>
+            {% if c.scan_signe %}
+              <form method="post" action="{% url 'convention_valider' c.pk %}" class="en-ligne">{% csrf_token %}<button class="bouton">Valider : signée par tous</button></form>
+              <form method="post" action="{% url 'convention_refuser_scan' c.pk %}">{% csrf_token %}
+                <input name="motif" placeholder="Motif du refus du scan" size="28"><button>Refuser le scan</button></form>
+            {% else %}
+              <form method="post" action="{% url 'convention_generer' c.stage.pk %}">{% csrf_token %}<button>Régénérer (nouvelle version)</button></form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}<p>Aucune.</p>{% endif %}
+
+  <h2>4. Signées par toutes les parties</h2>
+  <p><a href="{% url 'export_conventions' %}">Exporter les conventions signées (CSV pour WebAurion)</a></p>
+  {% if signees %}
+    <div class="defilement"><table>
+      <tr><th>N°</th><th>Étudiant</th><th>Entreprise</th><th>Signée le</th><th>Fichiers</th></tr>
+      {% for c in signees %}
+        <tr>
+          <td>{{ c.numero }}</td><td>{{ c.stage.etudiant.get_full_name }}</td><td>{{ c.stage.entreprise }}</td>
+          <td>{{ c.signee_le|date:"d/m/Y" }}</td>
+          <td><a href="{% url 'telecharger_convention' c.pk 'pdf' %}">PDF</a> · <a href="{% url 'telecharger_convention' c.pk 'scan' %}">Scan signé</a> · <a href="{% url 'dossier_stage' c.stage.pk %}">Dossier complet (zip)</a></td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}<p>Aucune pour l'instant.</p>{% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

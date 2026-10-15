@@ -1,0 +1,32 @@
+{# Compte rendu d'un import CSV (WebAurion ou Moodle). Reçoit « rapport ». #}
+<h2>{% if rapport.simulation %}Simulation : rien n'a été enregistré{% else %}Résultat de l'import{% endif %}</h2>
+<p>
+  {{ rapport.nb_total }} ligne{{ rapport.nb_total|pluralize }} lue{{ rapport.nb_total|pluralize }} :
+  <strong class="succes">{{ rapport.faits|length }}</strong> {% if rapport.simulation %}à traiter{% else %}traitée{{ rapport.faits|length|pluralize }}{% endif %},
+  <strong>{{ rapport.ignorees|length }}</strong> sans effet,
+  <strong class="{% if rapport.erreurs %}erreur{% endif %}">{{ rapport.erreurs|length }}</strong> en erreur.
+</p>
+
+{% if rapport.erreurs %}
+  <h3 class="erreur">Lignes refusées</h3>
+  <div class="defilement"><table>
+    <tr><th>Ligne</th><th>Problème</th></tr>
+    {% for numero, texte in rapport.erreurs %}<tr><td>{{ numero }}</td><td>{{ texte }}</td></tr>{% endfor %}
+  </table></div>
+{% endif %}
+
+{% if rapport.faits %}
+  <h3>{% if rapport.simulation %}Ce qui serait fait{% else %}Ce qui a été fait{% endif %}</h3>
+  <div class="defilement"><table>
+    <tr><th>Ligne</th><th>Détail</th></tr>
+    {% for numero, texte in rapport.faits %}<tr><td>{{ numero }}</td><td>{{ texte }}</td></tr>{% endfor %}
+  </table></div>
+{% endif %}
+
+{% if rapport.ignorees %}
+  <h3>Sans effet</h3>
+  <div class="defilement"><table>
+    <tr><th>Ligne</th><th>Détail</th></tr>
+    {% for numero, texte in rapport.ignorees %}<tr><td>{{ numero }}</td><td>{{ texte }}</td></tr>{% endfor %}
+  </table></div>
+{% endif %}

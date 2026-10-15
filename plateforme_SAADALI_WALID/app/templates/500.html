@@ -1,0 +1,20 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Erreur · EIGSI</title>
+  <link rel="stylesheet" href="{% static 'css/eigsi.css' %}">
+</head>
+<body>
+  {# Page autonome : en cas d'erreur serveur, on n'utilise ni le menu ni la base de données #}
+  <div class="accueil-fond">
+    <main class="carte-connexion">
+      <img class="logo" src="{% static 'img/logo-eigsi.png' %}" width="190" height="81" alt="EIGSI, école d'ingénieurs Casablanca">
+      <h1>Un problème est survenu</h1>
+      <p>La page n'a pas pu s'afficher. Ce n'est pas de votre faute : l'erreur est enregistrée. Réessayez dans quelques instants.</p>
+      <p class="bas"><a href="/">Retour à l'accueil</a></p>
+    </main>
+  </div>
+</body>
+</html>

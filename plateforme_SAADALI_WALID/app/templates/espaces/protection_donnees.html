@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block titre %}Protection des données{% endblock %}
+{% block contenu %}
+  <h1>Protection des données personnelles</h1>
+  <p><small>Information donnée en application de la loi n° 09-08 relative à la protection des personnes physiques à
+     l'égard du traitement des données à caractère personnel.</small></p>
+
+  <h2>Qui est responsable ?</h2>
+  <p>{{ ecole.nom }} ({{ ecole.adresse }}) est responsable du traitement des données de cette plateforme de gestion des
+     stages. Contact pour toute question ou demande :
+     <a href="mailto:{{ ecole.email_contact }}">{{ ecole.email_contact }}</a>.</p>
+
+  <h2>Pourquoi ces données sont-elles utilisées ?</h2>
+  <p>Uniquement pour gérer les stages : affecter un encadrant, déclarer et valider un stage, établir la convention,
+     suivre les livrables et les rappels, organiser les soutenances, enregistrer les notes et archiver le dossier.
+     Elles ne servent ni à de la publicité ni à d'autres finalités, et ne sont pas vendues.</p>
+
+  <h2>Quelles données ?</h2>
+  <ul>
+    <li><strong>Compte</strong> : nom, prénom, adresse e-mail, rôle, mot de passe (conservé uniquement sous forme chiffrée).</li>
+    <li><strong>Stage</strong> : entreprise, sujet, dates, tuteur et représentant de l'entreprise (nom, fonction, e-mail, téléphone), convention et scan signé.</li>
+    <li><strong>Suivi</strong> : livrables et dates limites, historique des actions (qui a fait quoi, quand), rappels envoyés.</li>
+    <li><strong>Soutenance</strong> : date, salle, composition du jury, procès-verbal et note.</li>
+  </ul>
+
+  <h2>Qui y a accès ?</h2>
+  <p>Chaque personne ne voit que ce qui la concerne : l'étudiant voit son dossier, l'encadrant ses étudiants, le jury
+     ses soutenances, le Service Stages (Career Center) l'ensemble des dossiers pour les gérer. Les données de notes
+     et de conventions sont échangées avec le système de scolarité de l'école (WebAurion) sous forme de fichiers.</p>
+
+  <h2>Combien de temps ?</h2>
+  <p>Le dossier de stage (convention, notes, historique) est conservé <strong>10 ans</strong> après la dernière année
+     d'inscription, durée prévue par la convention de stage. Ensuite, le compte est anonymisé : le nom, l'adresse e-mail,
+     les coordonnées du tuteur, le procès-verbal et les fichiers de convention sont effacés.</p>
+
+  <h2>Quels sont vos droits ?</h2>
+  <p>Vous pouvez demander à <strong>accéder</strong> à vos données, les <strong>faire rectifier</strong>, vous
+     <strong>opposer</strong> à leur traitement pour des motifs légitimes ou en demander la <strong>suppression</strong>
+     lorsque la loi le permet. Écrivez à <a href="mailto:{{ ecole.email_contact }}">{{ ecole.email_contact }}</a> en
+     précisant votre nom et votre adresse e-mail : une réponse vous est donnée après vérification de votre identité.
+     Vous pouvez aussi saisir la Commission Nationale de contrôle de la protection des Données à caractère Personnel (CNDP).</p>
+
+  <h2>Comment sont-elles protégées ?</h2>
+  <p>Connexion par mot de passe personnel, accès limité selon le rôle, échanges chiffrés (HTTPS), fichiers déposés
+     jamais accessibles directement, sauvegardes régulières.</p>
+
+  <p class="retour"><a href="{% url 'accueil' %}">← Retour à l'accueil</a></p>
+{% endblock %}

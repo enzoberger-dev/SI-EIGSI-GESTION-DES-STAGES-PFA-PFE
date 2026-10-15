@@ -1,0 +1,27 @@
+# Plateforme de gestion des stages : ce qu'on ne met JAMAIS dans le dépôt
+# (le .gitignore de la racine du dépôt ne protège que « data/ » à la racine)
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Environnement Python et caches
+app/.venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Bases de données (la démo crée demo.sqlite3 ; l'application crée db.sqlite3)
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+
+# Fichiers déposés ou générés
+app/uploads/*
+!app/uploads/.gitkeep
+app/demo_uploads/
+app/sauvegardes/
+app/staticfiles/

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block titre %}Fiche de stage{% endblock %}
+{% block contenu %}
+  <h1>Fiche de stage — {{ stage.etudiant.get_full_name|default:stage.etudiant.email }}</h1>
+  <p><strong>{{ stage.type_stage }}</strong> ({{ stage.promotion }}) — statut : {{ stage.get_statut_display }}</p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <div class="defilement"><table>
+    <tr><th>Entreprise</th><td>{{ stage.entreprise }}
+        {% if stage.entreprise.ville %}— {{ stage.entreprise.ville }}{% endif %}
+        {% if stage.entreprise.pays %}({{ stage.entreprise.pays }}){% endif %}</td></tr>
+    {% if stage.lieu_si_different %}<tr><th>Lieu du stage</th><td>{{ stage.lieu_si_different|linebreaksbr }}</td></tr>{% endif %}
+    <tr><th>Origine</th><td>{{ stage.get_origine_display }}</td></tr>
+    <tr><th>Sujet, activités</th><td>{{ stage.sujet|linebreaksbr }}</td></tr>
+    <tr><th>Dates</th><td>{{ stage.date_debut|date:"d/m/Y" }} → {{ stage.date_fin|date:"d/m/Y" }}
+        ({{ stage.duree_semaines }} semaines ; minimum {{ stage.promotion.duree_min_semaines }})</td></tr>
+    <tr><th>Durée hebdomadaire</th><td>{{ stage.heures_max_semaine }} h max{% if stage.horaires %} — {{ stage.horaires }}{% endif %}</td></tr>
+    {% if stage.cas_particuliers %}<tr><th>Cas particuliers</th><td>{{ stage.cas_particuliers|linebreaksbr }}</td></tr>{% endif %}
+    <tr><th>Représentant</th><td>{{ stage.representant_nom }} ({{ stage.representant_fonction }})</td></tr>
+    <tr><th>Tuteur</th><td>{{ stage.tuteur_nom }} — {{ stage.tuteur_email }}{% if stage.tuteur_telephone %} — {{ stage.tuteur_telephone }}{% endif %}</td></tr>
+    {% if stage.gratification_montant %}<tr><th>Gratification</th><td>{{ stage.gratification_montant }} MAD / mois{% if stage.gratification_modalites %} — {{ stage.gratification_modalites }}{% endif %}</td></tr>{% endif %}
+  </table></div>
+
+  {% if en_attente %}
+    <h2>Ma décision</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.decision }}
+      {% for erreur in form.decision.errors %}<div class="erreur">{{ erreur }}</div>{% endfor %}
+      <label for="{{ form.motif.id_for_label }}">{{ form.motif.label }}</label>
+      {{ form.motif }}
+      <div><small>{{ form.motif.help_text }}</small></div>
+      {% for erreur in form.motif.errors %}<div class="erreur">{{ erreur }}</div>{% endfor %}
+      <button type="submit" class="bouton">Enregistrer ma décision</button>
+    </form>
+  {% else %}
+    <p><em>Cette fiche n'attend pas de décision.</em></p>
+  {% endif %}
+
+  <h2>Historique</h2>
+  <ul>
+    {% for h in historique %}
+      <li>{{ h.date|date:"d/m/Y H:i" }} — {{ h.get_action_display }}
+          {% if h.auteur %}par {{ h.auteur.get_full_name|default:h.auteur.email }}{% endif %}
+          {% if h.commentaire %}: <em>{{ h.commentaire }}</em>{% endif %}</li>
+    {% endfor %}
+  </ul>
+
+  <p class="retour"><a href="{% url 'stages_a_valider' %}">← Retour aux stages à valider</a></p>
+{% endblock %}

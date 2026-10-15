@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titre %}Mes soutenances{% endblock %}
+{% block contenu %}
+  <h1>Mes soutenances et disponibilités</h1>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <h2>Sondages de disponibilités</h2>
+  {% for s in sondages %}
+    <p>
+      <strong>{{ s.campagne.nom }}</strong> ({{ s.campagne.date_debut|date:"d/m/Y" }} → {{ s.campagne.date_fin|date:"d/m/Y" }}) :
+      {% if s.repondu %}<span class="succes">répondu</span> · <a href="{% url 'jury_disponibilites' s.campagne.pk %}">modifier ma réponse</a>
+      {% else %}<span class="erreur">à remplir</span> · <a href="{% url 'jury_disponibilites' s.campagne.pk %}">indiquer mes disponibilités</a>{% endif %}
+    </p>
+  {% empty %}
+    <p>Aucun sondage ouvert.</p>
+  {% endfor %}
+
+  <h2>Mes soutenances</h2>
+  {% if soutenances %}
+    <div class="defilement"><table>
+      <tr><th>Date</th><th>Étudiant</th><th>Salle</th><th>Jury</th><th>État</th><th></th></tr>
+      {% for s in soutenances %}
+        <tr>
+          <td>{{ s.debut|date:"D d/m/Y H:i" }}</td>
+          <td>{{ s.stage.etudiant.get_full_name|default:s.stage.etudiant.email }}<br><small>{{ s.stage.entreprise }}</small></td>
+          <td>{{ s.salle }}</td>
+          <td>{% for m in s.jury.all %}{{ m.get_full_name|default:m.email }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+          <td><span class="badge{% if s.statut == 'NOTEE' %} badge-ok{% elif s.statut == 'PROPOSEE' or s.statut == 'PV_SAISI' %} badge-attente{% elif s.statut == 'A_PLANIFIER' %} badge-neutre{% endif %}">{{ s.get_statut_display }}</span>{% if s.statut == "PV_SAISI" or s.statut == "NOTEE" %} ({{ s.note }}/20){% endif %}</td>
+          <td>{% if s.statut == "CONVOQUEE" or s.statut == "PV_SAISI" %}<a href="{% url 'jury_pv' s.pk %}">{% if s.statut == "CONVOQUEE" %}Saisir le PV{% else %}Corriger le PV{% endif %}</a>
+              {% elif s.statut == "NOTEE" %}<a href="{% url 'jury_pv' s.pk %}">Voir le PV</a>{% endif %}</td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucune soutenance ne vous est encore attribuée (elles apparaissent une fois le planning validé).</p>
+  {% endif %}
+{% endblock %}

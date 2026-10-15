@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titre %}Déclarer mon stage{% endblock %}
+{% block contenu %}
+  <h1>Déclarer mon stage</h1>
+  <p>{{ promotion }} : stage <strong>{{ promotion.type_stage }}</strong>,
+     au moins {{ promotion.duree_min_semaines }} semaines.
+     Les champs marqués * sont obligatoires pour soumettre ; vous pouvez enregistrer un brouillon à tout moment.</p>
+
+  {% if stage.statut == "REFUSE" %}
+    <p class="erreur">Votre fiche a été refusée : corrigez-la puis soumettez-la de nouveau (le motif est dans « Mon stage »).</p>
+  {% endif %}
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <form method="post">
+    {% csrf_token %}
+    {% for erreur in form.non_field_errors %}<p class="erreur">{{ erreur }}</p>{% endfor %}
+
+    {% for titre, champs in form.rubriques %}
+      <fieldset>
+        <legend>{{ titre }}</legend>
+        {% for champ in champs %}
+          <label for="{{ champ.id_for_label }}">{{ champ.label }}</label>
+          {{ champ }}
+          {% for erreur in champ.errors %}<div class="erreur">{{ erreur }}</div>{% endfor %}
+        {% endfor %}
+      </fieldset>
+    {% endfor %}
+
+    <button type="submit" name="brouillon" class="bouton">Enregistrer le brouillon</button>
+    <button type="submit" name="soumettre" class="bouton">Soumettre à mon valideur</button>
+  </form>
+
+  <p class="retour"><a href="{% url 'mon_stage' %}">← Retour à mon stage</a></p>
+{% endblock %}

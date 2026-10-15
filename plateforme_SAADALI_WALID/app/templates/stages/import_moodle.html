@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titre %}Import Moodle{% endblock %}
+{% block contenu %}
+  <h1>Importer les rendus depuis Moodle</h1>
+  <p><small>Dans Moodle, ouvrez le devoir, affichez « Voir tous les travaux remis » et téléchargez le tableau en CSV.
+     Choisissez ensuite ici le livrable correspondant et déposez le fichier : les étudiants dont le statut est
+     « Remis pour évaluation » sont marqués <strong>rendus</strong> (leurs rappels s'arrêtent). Ils sont retrouvés par leur
+     adresse e-mail (colonne « Adresse de courriel »).</small></p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  {% if noms %}
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+      <label>Livrable concerné
+        <select name="livrable" required>
+          {% for nom in noms %}<option value="{{ nom }}">{{ nom }}</option>{% endfor %}
+        </select>
+      </label>
+      <label><input type="file" name="fichier" accept=".csv,text/csv" required class="large"></label>
+      <label><input type="checkbox" name="simuler" value="1" checked>
+        Vérifier seulement (simulation : rien n'est enregistré)</label>
+      <button class="bouton">Lancer</button>
+    </form>
+  {% else %}
+    <p>Aucun livrable n'existe encore : ils sont créés quand une convention est signée.</p>
+  {% endif %}
+
+  {% if rapport %}{% include "stages/_rapport.html" %}{% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

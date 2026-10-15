@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titre %}Aide{% endblock %}
+{% block classe_page %}page-libre{% endblock %}
+{% block contenu %}
+  <h1>À propos et aide</h1>
+  <p>{{ introduction }}</p>
+
+  {% for s in sections %}
+    <section class="carte" aria-labelledby="aide-{{ forloop.counter }}">
+      <h2 id="aide-{{ forloop.counter }}">{{ s.role }}</h2>
+      <p>{{ s.resume }}</p>
+      <ol class="etapes">
+        {% for e in s.etapes %}
+          <li>
+            <strong>{{ e.titre }}</strong>
+            <span>{{ e.texte }}</span>
+            {% if e.lien %}<a href="{{ e.lien.1 }}">{{ e.lien.0 }} →</a>{% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+      {% if s.faq %}
+        <h3>Questions fréquentes</h3>
+        {% for question, reponse in s.faq %}
+          <details class="faq">
+            <summary>{{ question }}</summary>
+            <p>{{ reponse }}</p>
+          </details>
+        {% endfor %}
+      {% endif %}
+    </section>
+  {% empty %}
+    <div class="vide">
+      <strong>Aucun rôle ne vous est encore attribué</strong>
+      Contactez le Service Stages pour obtenir l'accès à votre espace.
+    </div>
+  {% endfor %}
+
+  <section class="carte" aria-labelledby="aide-contact">
+    <h2 id="aide-contact">Une question ?</h2>
+    <p>Écrivez au Career Center : <a href="mailto:{{ contact }}">{{ contact }}</a>.</p>
+    <p><a href="{% url 'protection_donnees' %}">Protection des données personnelles</a></p>
+  </section>
+
+  <p class="retour"><a href="{% url 'accueil' %}">← Retour à l'accueil</a></p>
+{% endblock %}

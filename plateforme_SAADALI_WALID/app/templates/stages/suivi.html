@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titre %}Suivi des livrables{% endblock %}
+{% block contenu %}
+  <h1>Suivi des livrables</h1>
+  <p><small>Les livrables sont rendus sur <strong>Moodle</strong>. Quand vous constatez qu'un livrable est rendu,
+     marquez-le ici : les rappels automatiques s'arrêtent pour cet étudiant.</small></p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <p>
+    {% if seulement_retards %}
+      Seulement les retards. <a href="{% url 'suivi' %}">Tout afficher</a>
+    {% else %}
+      <strong>{{ nb_retards }}</strong> livrable{{ nb_retards|pluralize }} en retard.
+      <a href="{% url 'suivi' %}?retard=1">Voir seulement les retards</a>
+    {% endif %}
+  </p>
+
+  {% if lignes %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Stage</th><th>Livrable</th><th>Date limite</th><th>Statut</th><th>Rappels</th><th>Actions</th></tr>
+      {% for ligne in lignes %}
+        {% with l=ligne.livrable %}
+        <tr>
+          <td>{{ l.stage.etudiant.get_full_name|default:l.stage.etudiant.email }}</td>
+          <td>{{ l.stage.type_stage }}</td>
+          <td>{{ l.nom }}</td>
+          <td>{{ l.date_limite|date:"d/m/Y" }}{% if ligne.en_retard %} <span class="erreur"><strong>en retard</strong></span>{% endif %}</td>
+          <td>{% if l.statut == "RENDU" %}<span class="badge badge-ok">Rendu le {{ l.rendu_le|date:"d/m/Y" }}</span>{% else %}<span class="badge badge-neutre">À rendre</span>{% endif %}</td>
+          <td>{{ ligne.nb_rappels }}</td>
+          <td>
+            <form method="post" action="{% url 'livrable_rendu' l.pk %}" class="en-ligne">{% csrf_token %}
+              {% if l.statut == "RENDU" %}
+                <input type="hidden" name="action" value="annuler"><button>Annuler « rendu »</button>
+              {% else %}
+                <button class="bouton sans-marge">Marquer rendu</button>
+              {% endif %}
+            </form>
+            {% if l.statut != "RENDU" %}
+              <form method="post" action="{% url 'livrable_prolonger' l.pk %}" class="en-ligne">{% csrf_token %}
+                <input type="date" name="date" required class="auto"><button>Prolonger</button></form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endwith %}
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucun livrable{% if seulement_retards %} en retard{% endif %}. Les livrables sont créés quand une convention est signée.</p>
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

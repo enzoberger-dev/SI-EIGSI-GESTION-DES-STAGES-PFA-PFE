@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titre %}{{ titre }}{% endblock %}
+{% block classe_page %}page-libre{% endblock %}
+{% block contenu %}
+  <h1>{{ titre }}</h1>
+  <p>{{ phrase }}</p>
+  {% if liens %}
+    <div class="grille">
+      {% for texte, adresse in liens %}
+        <a class="carte" href="{{ adresse }}"><h2>{{ texte }}</h2></a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="vide">
+      <strong>Rien à afficher ici pour l'instant</strong>
+      Les fonctionnalités de cet espace arriveront dans les prochaines étapes.
+    </div>
+  {% endif %}
+  <p class="retour"><a href="{% url 'accueil' %}">← Retour à l'accueil</a></p>
+{% endblock %}

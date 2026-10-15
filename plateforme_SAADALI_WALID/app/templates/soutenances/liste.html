@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titre %}Soutenances{% endblock %}
+{% block contenu %}
+  <h1>Soutenances</h1>
+  <p><small>Une campagne regroupe les soutenances d'une période : les membres du jury indiquent leurs disponibilités,
+     la plateforme propose un planning, vous le validez et les convocations partent. Les salles se gèrent dans
+     <a href="/admin/soutenances/salle/">l'administration</a>.</small></p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <h2>Campagnes</h2>
+  {% if campagnes %}
+    <div class="defilement"><table>
+      <tr><th>Campagne</th><th>Période</th><th>Année</th><th>État</th></tr>
+      {% for c in campagnes %}
+        <tr>
+          <td><a href="{% url 'soutenances_campagne' c.pk %}">{{ c.nom }}</a></td>
+          <td>{{ c.date_debut|date:"d/m/Y" }} → {{ c.date_fin|date:"d/m/Y" }}</td>
+          <td>{{ c.annee_universitaire }} (année{{ c.annees|length|pluralize }} {{ c.annees_concernees }})</td>
+          <td><span class="badge">{{ c.get_statut_display }}</span></td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucune campagne pour l'instant.</p>
+  {% endif %}
+  <p><a href="{% url 'export_notes' %}">Exporter les notes validées de l'année en cours (CSV pour WebAurion)</a></p>
+
+  <h2>Nouvelle campagne</h2>
+  {% if not nb_salles %}<p class="erreur">Aucune salle active : ajoutez-en dans <a href="/admin/soutenances/salle/">l'administration</a> avant de proposer un planning.</p>{% endif %}
+  <p><small>{{ nb_jury }} membre{{ nb_jury|pluralize }} du jury (rôle « Jury ») sera{{ nb_jury|pluralize:",ont" }} prévenu{{ nb_jury|pluralize }} par e-mail dès la création.</small></p>
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    {% for champ in form %}
+      <label>{{ champ.label }} {{ champ }}
+        {% if champ.help_text %}<small>{{ champ.help_text }}</small>{% endif %}
+        {% for erreur in champ.errors %}<span class="erreur">{{ erreur }}</span>{% endfor %}
+      </label>
+    {% endfor %}
+    <button class="bouton">Créer la campagne et prévenir les jurys</button>
+  </form>
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

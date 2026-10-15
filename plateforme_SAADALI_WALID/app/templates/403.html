@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block titre %}Accès refusé{% endblock %}
+{% block contenu %}
+  <h1>Accès refusé</h1>
+  <p>Cette page est réservée à un autre rôle.</p>
+  <p class="retour"><a class="bouton" href="{% url 'accueil' %}">Retour à mes espaces</a></p>
+{% endblock %}

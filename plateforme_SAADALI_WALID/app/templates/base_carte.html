@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{# Cadre des pages « avant connexion » : une carte centrée sur fond bleu, avec le logo. Pas de menu. #}
+{% block cadre %}
+  <div class="accueil-fond">
+    <span class="bulle b1" aria-hidden="true"></span>
+    <span class="bulle b2" aria-hidden="true"></span>
+    <span class="bulle b3" aria-hidden="true"></span>
+    <main id="contenu" class="carte-connexion">
+      <a href="{% url 'accueil' %}" aria-label="EIGSI Casablanca">
+        <img class="logo" src="{% static 'img/logo-eigsi.png' %}" width="190" height="81" alt="EIGSI, école d'ingénieurs Casablanca">
+      </a>
+      {% block contenu %}{% endblock %}
+      <p class="bas"><a href="{% url 'protection_donnees' %}">Protection des données personnelles</a></p>
+    </main>
+  </div>
+{% endblock %}

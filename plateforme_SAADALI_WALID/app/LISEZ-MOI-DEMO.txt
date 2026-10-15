@@ -1,0 +1,28 @@
+DEMONSTRATION - Plateforme de gestion des stages PFA/PFE, EIGSI Casablanca
+==========================================================================
+
+POUR LANCER LA DEMO
+  1. Python 3.10 ou plus recent doit etre installe (https://www.python.org/downloads/ :
+     cocher "Add python.exe to PATH").
+  2. Double-clic sur  LANCER_LA_DEMO.bat
+     (premier lancement : 2 a 5 minutes, Internet necessaire ; ensuite quelques secondes, sans Internet).
+  3. Le navigateur s'ouvre sur http://localhost:8000/
+  4. Pour arreter : fermer la fenetre noire.
+
+COMPTES (fictifs) - le mot de passe est le meme pour tous :  Demo-EIGSI-2026
+  nadia.alaoui@example.test       Career Center (pilote tout)
+  adam.elamrani@example.test      Etudiant 3e (convention signee)
+  imane.bouazza@example.test      Etudiante 3e (fiche soumise)
+  yasmine.benali@example.test     Etudiante 5e (doit deposer son scan)
+  reda.lamrani@example.test       Etudiant 5e (convention a generer)
+  kenza.alami@example.test        Etudiante 5e (soutenance planifiee)
+  mehdi.ouazzani@example.test     Etudiant 5e (PV a valider)
+  karim.idrissi@example.test      Coordinateur 3e (valide les fiches)
+  sara.bennani@example.test       Encadrante et jury
+  (liste complete et deroule de la presentation : docs/13-Demo-presentation.md du depot)
+
+ASTUCES
+  - Changer de compte vite : ouvrir une fenetre de navigation privee.
+  - Fichier de scan pret pour la demo : exemples\scan_convention_exemple.pdf
+  - Repartir de zero apres des essais : supprimer demo.sqlite3, puis relancer LANCER_LA_DEMO.bat
+  - Page blanche ou ancien aspect : Ctrl + F5.

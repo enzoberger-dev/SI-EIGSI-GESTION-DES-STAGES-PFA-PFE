@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block titre %}Tableau de bord{% endblock %}
+{% block contenu %}
+  {# La page se recharge seule toutes les 60 secondes : les chiffres sont toujours à jour #}
+  <meta http-equiv="refresh" content="60">
+  <h1>Tableau de bord des stages</h1>
+  <form method="get" class="marge-bas">
+    Année universitaire :
+    <select name="annee" onchange="this.form.submit()">
+      {% for a in annees %}<option value="{{ a }}" {% if a == donnees.annee %}selected{% endif %}>{{ a }}</option>{% endfor %}
+    </select>
+    <noscript><button>Afficher</button></noscript>
+    <small>· {{ donnees.nb_etudiants }} étudiant{{ donnees.nb_etudiants|pluralize }} inscrit{{ donnees.nb_etudiants|pluralize }} · mise à jour automatique chaque minute</small>
+  </form>
+
+  <h2>À traiter maintenant</h2>
+  <div class="grille">
+    <div class="carte">
+      <p class="carte-titre">Fiches soumises (en attente du valideur)</p>
+      <p class="carte-valeur">{{ donnees.fiches_soumises|length }}</p>
+    </div>
+    <div class="carte">
+      <p class="carte-titre">Stages validés, convention à générer</p>
+      <p class="carte-valeur">{{ donnees.a_generer|length }}</p>
+      {% if donnees.a_generer %}<a href="{% url 'conventions' %}">→ Conventions</a>{% endif %}
+    </div>
+    <div class="carte">
+      <p class="carte-titre">Conventions en cours de signature</p>
+      <p class="carte-valeur">{{ donnees.conventions_en_attente|length }}</p>
+      <a href="{% url 'conventions' %}">→ Conventions</a>
+    </div>
+    <div class="carte">
+      <p class="carte-titre">Scans à vérifier</p>
+      <p class="carte-valeur">{{ donnees.scans_a_verifier|length }}</p>
+    </div>
+    <div class="carte">
+      <p class="carte-titre">Étudiants de 4e et 5e année sans encadrant</p>
+      <p class="carte-valeur">{{ donnees.sans_encadrant|length }}</p>
+      {% if donnees.sans_encadrant %}<a href="{% url 'affectations' %}">→ Affecter</a>{% endif %}
+    </div>
+    <div class="carte">
+      <p class="carte-titre">PV de soutenance à valider</p>
+      <p class="carte-valeur">{{ donnees.pv_a_valider|length }}</p>
+      {% if donnees.pv_a_valider %}<a href="{% url 'soutenances' %}">→ Soutenances</a>{% endif %}
+    </div>
+    <div class="carte{% if donnees.livrables.en_retard %} carte-alerte{% endif %}">
+      <p class="carte-titre">Livrables en retard</p>
+      <p class="carte-valeur">{{ donnees.livrables.en_retard }}</p>
+      {% if donnees.livrables.en_retard %}<a href="{% url 'suivi' %}?retard=1">→ Voir les retards</a>{% endif %}
+    </div>
+  </div>
+
+  <h2>Étudiants par étape</h2>
+  {% if donnees.nb_etudiants %}
+    <div class="defilement"><table>
+      <tr>
+        <th>Étape</th>
+        {% for a in donnees.annees_etudes %}<th>{{ a }}{% if a == 1 %}re{% else %}e{% endif %} année</th>{% endfor %}
+        <th>Total</th>
+      </tr>
+      {% for etape in donnees.etapes %}
+        <tr>
+          <td>{{ etape.libelle }}</td>
+          {% for n in etape.par_annee %}<td>{{ n|default:"·" }}</td>{% endfor %}
+          <td><strong>{{ etape.total }}</strong></td>
+        </tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucun étudiant inscrit pour cette année. <a href="{% url 'import_webaurion' %}">Importer depuis WebAurion</a></p>
+  {% endif %}
+
+  <h2>Livrables rendus sur Moodle</h2>
+  <p>
+    <strong>{{ donnees.livrables.rendus }}</strong> rendu{{ donnees.livrables.rendus|pluralize }} ·
+    <strong>{{ donnees.livrables.a_rendre }}</strong> à rendre ·
+    <strong class="{% if donnees.livrables.en_retard %}erreur{% endif %}">{{ donnees.livrables.en_retard }}</strong> en retard
+    (sur {{ donnees.livrables.total }}).
+    <a href="{% url 'import_moodle' %}">Importer l'état depuis Moodle</a>
+  </p>
+  {% if donnees.livrables_en_retard %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Livrable</th><th>Date limite</th></tr>
+      {% for l in donnees.livrables_en_retard %}
+        <tr><td>{{ l.stage.etudiant.get_full_name|default:l.stage.etudiant.email }}</td><td>{{ l.nom }}</td><td class="erreur">{{ l.date_limite|date:"d/m/Y" }}</td></tr>
+      {% endfor %}
+    </table></div>
+  {% endif %}
+
+  <h2>Relances automatiques (7 derniers jours)</h2>
+  {% if donnees.relances_recentes %}
+    <div class="defilement"><table>
+      <tr><th>Envoyée le</th><th>Étudiant</th><th>Objet</th><th>Envoyée à</th></tr>
+      {% for r in donnees.relances_recentes %}
+        <tr><td>{{ r.envoye_le|date:"d/m/Y H:i" }}</td><td>{{ r.stage.etudiant.get_full_name|default:r.stage.etudiant.email }}</td><td>{{ r.get_type_display }} ({{ r.delai }} j)</td><td>{{ r.destinataire }}</td></tr>
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucune relance envoyée récemment.</p>
+  {% endif %}
+
+  <p class="retour"><a href="{% url 'espace-service-stages' %}">← Retour à l'espace Service Stages</a></p>
+{% endblock %}

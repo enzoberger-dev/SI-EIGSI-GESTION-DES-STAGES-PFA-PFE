@@ -1,0 +1,9 @@
+Nom;Prénom;E-mail;Code.Groupe;Rôle
+Alaoui;Rania;rania.alaoui@example.test;INGE_4_FISE_CA_2627_S7;Étudiant
+Idrissi;Hamza;hamza.idrissi@example.test;INGE_5_FISE_CA_2627;Étudiant
+Benjelloun;Salma;salma.benjelloun@example.test;INGE_3_FISE_CA_2627;
+Tazi;Leila;leila.tazi@example.test;;Encadrant
+Fassi;Youssef;youssef.fassi@example.test;INGE_4_FISE_CA_2627;Étudiant
+Adam;El Amrani;adam.elamrani@example.test;INGE_3_FISE_CA_2627;
+Erreur;Mail;pas-un-email;INGE_4_FISE_CA_2627;Étudiant
+Sans;Groupe;sans.groupe@example.test;;Étudiant

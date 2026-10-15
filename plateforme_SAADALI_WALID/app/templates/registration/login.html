@@ -1,0 +1,18 @@
+{% extends "base_carte.html" %}
+{% block titre %}Connexion{% endblock %}
+{% block contenu %}
+  <h1>Connexion</h1>
+  {% if form.errors %}
+    <p class="erreur" role="alert">E-mail ou mot de passe incorrect.</p>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}  {# jeton anti-falsification, obligatoire sur tout formulaire #}
+    <label for="id_username">Adresse e-mail</label>
+    <input type="email" name="username" id="id_username" autocomplete="username" required autofocus>
+    <label for="id_password">Mot de passe</label>
+    <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit" class="bouton">Se connecter</button>
+  </form>
+  <p class="bas"><a href="{% url 'password_reset' %}">Mot de passe oublié ?</a></p>
+{% endblock %}

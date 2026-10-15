@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block titre %}{{ campagne.nom }}{% endblock %}
+{% block contenu %}
+  <h1>{{ campagne.nom }}</h1>
+  <p>
+    Du {{ campagne.date_debut|date:"d/m/Y" }} au {{ campagne.date_fin|date:"d/m/Y" }} ·
+    {{ campagne.duree_minutes }} min par soutenance · jury de {{ campagne.taille_jury }} · année{{ campagne.annees|length|pluralize }} d'études {{ campagne.annees_concernees }} ·
+    <strong>{{ campagne.get_statut_display }}</strong>
+  </p>
+
+  {% for message in messages %}
+    <p class="{% if message.tags == 'error' %}erreur{% else %}succes{% endif %}">{{ message }}</p>
+  {% endfor %}
+
+  <h2>1. Disponibilités du jury</h2>
+  <p><strong>{{ reponses }}</strong> réponse{{ reponses|pluralize }} sur {{ nb_jury }} membre{{ nb_jury|pluralize }} du jury.
+    {% if sans_reponse %}Sans réponse : {% for m in sans_reponse %}{{ m.get_full_name|default:m.email }}{% if not forloop.last %}, {% endif %}{% endfor %}.
+      <small>(relancés automatiquement par la commande <code>envoyer_relances</code>)</small>{% endif %}</p>
+
+  <h2>2. Planning</h2>
+  <form method="post" action="{% url 'soutenances_proposer' campagne.pk %}" class="en-ligne">{% csrf_token %}
+    <button class="bouton sans-marge">{% if soutenances %}Proposer un nouveau planning{% else %}Proposer le planning{% endif %}</button>
+  </form>
+  {% if nb_proposees %}
+    <form method="post" action="{% url 'soutenances_valider' campagne.pk %}" class="en-ligne">{% csrf_token %}
+      <button class="bouton sans-marge">Valider ({{ nb_proposees }}) et envoyer les convocations</button>
+    </form>
+  {% endif %}
+  <p><small>La proposition ne touche pas aux soutenances déjà convoquées. Une nouvelle proposition remplace celles qui ne sont pas encore validées.</small></p>
+
+  {% if soutenances %}
+    <div class="defilement"><table>
+      <tr><th>Étudiant</th><th>Créneau</th><th>Salle</th><th>Jury</th><th>État</th><th>Note</th></tr>
+      {% for s in soutenances %}
+        <tr>
+          <td>{{ s.stage.etudiant.get_full_name|default:s.stage.etudiant.email }}<br><small>{{ s.stage.entreprise }}</small></td>
+          <td>{% if s.debut %}{{ s.debut|date:"D d/m/Y H:i" }}{% else %}<em>à planifier</em>{% endif %}</td>
+          <td>{{ s.salle|default:"" }}</td>
+          <td>{% for m in s.jury.all %}{{ m.get_full_name|default:m.email }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+          <td><span class="badge{% if s.statut == 'NOTEE' %} badge-ok{% elif s.statut == 'PROPOSEE' or s.statut == 'PV_SAISI' %} badge-attente{% elif s.statut == 'A_PLANIFIER' %} badge-neutre{% endif %}">{{ s.get_statut_display }}</span></td>
+          <td>{% if s.note is not None %}{{ s.note }}/20{% endif %}</td>
+        </tr>
+        {% if s.statut != "PV_SAISI" and s.statut != "NOTEE" %}
+        <tr><td colspan="6">
+          <details><summary>Fixer ou corriger à la main</summary>
+            <form method="post" action="{% url 'soutenance_deplacer' s.pk %}">{% csrf_token %}
+              <label>Date et heure <input type="datetime-local" name="debut" required value="{{ s.debut|date:'Y-m-d\TH:i' }}"></label>
+              <label>Salle <select name="salle" required>
+                {% for salle in salles %}<option value="{{ salle.pk }}" {% if salle == s.salle %}selected{% endif %}>{{ salle }}</option>{% endfor %}
+              </select></label>
+              <label>Jury (Ctrl + clic pour en choisir plusieurs) <select name="jury" multiple size="4" required>
+                {% for m in jury %}<option value="{{ m.pk }}" {% if m in s.jury.all %}selected{% endif %}>{{ m.get_full_name|default:m.email }}</option>{% endfor %}
+              </select></label>
+              <button>Enregistrer{% if s.statut == "CONVOQUEE" %} (les convocations seront mises à jour){% endif %}</button>
+            </form>
+          </details>
+        </td></tr>
+        {% endif %}
+      {% endfor %}
+    </table></div>
+  {% else %}
+    <p>Aucune soutenance pour l'instant : elles sont créées à la première proposition de planning, pour les stages validés avec convention signée.</p>
+  {% endif %}
+
+  <h2>3. PV à valider</h2>
+  {% for s in a_valider %}
+    <fieldset>
+      <legend>{{ s.stage.etudiant.get_full_name|default:s.stage.etudiant.email }} — note {{ s.note }}/20</legend>
+      <p><small>Saisi par {{ s.pv_saisi_par.get_full_name|default:s.pv_saisi_par.email }} le {{ s.pv_saisi_le|date:"d/m/Y H:i" }}</small></p>
+      <p class="pre">{{ s.pv }}</p>
+      <form method="post" action="{% url 'soutenance_pv_valider' s.pk %}" class="en-ligne">{% csrf_token %}<button class="bouton sans-marge">Valider le PV et la note</button></form>
+      <form method="post" action="{% url 'soutenance_pv_refuser' s.pk %}" class="marge-haut">{% csrf_token %}
+        <label>Renvoyer au jury, motif <input name="motif" class="large"></label><button>Renvoyer</button>
+      </form>
+    </fieldset>
+  {% empty %}
+    <p>Aucun PV en attente.</p>
+  {% endfor %}
+
+  <p><a href="{% url 'export_notes' %}?annee={{ campagne.annee_universitaire }}">Exporter les notes validées de {{ campagne.annee_universitaire }} (CSV)</a></p>
+  <p class="retour"><a href="{% url 'soutenances' %}">← Toutes les campagnes</a></p>
+{% endblock %}

@@ -1,0 +1,93 @@
+/* ==========================================================================
+   Administration (/admin/) aux couleurs EIGSI : bleu du logo + ORANGE pour la distinguer du site (vert).
+   On ne change que les variables de couleur de Django (thème clair) et quelques détails de lisibilité.
+   Le thème sombre de Django reste intact.
+   ========================================================================== */
+html[data-theme="light"], :root {
+  --orange: #f59e0b;          /* liseré et repères */
+  --orange-bouton: #b45309;   /* texte blanc dessus : contraste 5 */
+  --orange-bouton-survol: #92400e;
+  --orange-pale: #fff4e0;
+
+  --primary: #004a85;         /* barre du fil d'Ariane, boutons */
+  --secondary: #0b2a47;       /* bandeau du haut */
+  --accent: #f59e0b;
+  --primary-fg: #fff;
+
+  --header-bg: #0b2a47;
+  --header-color: #dbe7f3;
+  --header-branding-color: #fff;
+  --header-link-color: #fff;
+
+  --breadcrumbs-bg: #004a85;
+  --breadcrumbs-fg: #cfe3f5;
+  --breadcrumbs-link-fg: #fff;
+
+  --link-fg: #0064b0;
+  --link-hover-color: #004a85;
+  --link-selected-fg: #004a85;
+
+  --button-bg: #0064b0;
+  --button-hover-bg: #004a85;
+  --default-button-bg: var(--orange-bouton);
+  --default-button-hover-bg: var(--orange-bouton-survol);
+  --object-tools-bg: #0064b0;
+  --object-tools-hover-bg: #004a85;
+
+  --selected-bg: var(--orange-pale);
+  --selected-row: var(--orange-pale);
+  --darkened-bg: #f4f7fa;
+  --hairline-color: #e0e6ec;
+  --border-color: #d3dbe3;
+  --body-quiet-color: #52606d;
+}
+
+html { font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif; }
+body { font-size: 15px; line-height: 1.5; }
+
+/* Bandeau du haut : logo sur fond blanc + étiquette orange + liseré orange */
+#header { padding: 10px 28px; border-bottom: 4px solid var(--orange); align-items: center; }
+#site-name a { display: inline-flex; align-items: center; gap: 14px; text-decoration: none; }
+#site-name .logo-admin { background: #fff; border-radius: 8px; padding: 4px 8px; height: 38px; width: auto; display: block; }
+#site-name .etiquette-admin {
+  font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  background: var(--orange); color: #3b2200; padding: 4px 12px; border-radius: 999px;
+}
+#user-tools { font-size: .85rem; }
+
+/* Titres et blocs */
+#content h1 { font-size: 1.6rem; font-weight: 700; color: #0b2a47; }
+#content h1::after { content: ""; display: block; width: 56px; height: 4px; margin-top: 8px; border-radius: 4px; background: linear-gradient(90deg, #0064b0, var(--orange)); }
+.module caption, .module h2, #content-related .module h2 { background: #0064b0; color: #fff; font-weight: 600; letter-spacing: .02em; text-transform: none; font-size: .95rem; }
+.module { border-radius: 8px; overflow: hidden; }
+.module caption a.section, .module caption a.section:link, .module caption a.section:visited { color: #fff; }
+
+/* Listes : lignes plus aérées, survol discret en orange pâle, colonnes triées visibles */
+#changelist table tbody td, #changelist table tbody th { padding-top: 10px; padding-bottom: 10px; }
+#changelist table tbody tr:hover td, #changelist table tbody tr:hover th { background: var(--orange-pale); }
+thead th { background: #e6f1fa; }
+thead th a, thead th { color: #0b2a47; }
+.paginator { font-size: .9rem; }
+#changelist-filter { border-radius: 8px; }
+#changelist-filter h3 { color: #0b2a47; }
+#changelist-filter li.selected a { color: var(--orange-bouton); font-weight: 700; }
+
+/* Formulaires : champs plus grands et focus bien visible */
+input[type=text], input[type=email], input[type=password], input[type=number], input[type=url], input[type=date], input[type=time], textarea, select {
+  padding: 7px 10px; border-radius: 6px;
+}
+input:focus, textarea:focus, select:focus { outline: 3px solid rgba(245, 158, 11, .45); border-color: var(--orange-bouton); }
+fieldset.module { border-radius: 8px; }
+.form-row { padding: 12px 14px; }
+.help, .helptext { color: var(--body-quiet-color); }
+
+/* Boutons : l'action principale est orange, les autres bleues */
+.button, input[type=submit], input[type=button], .submit-row input, a.button { border-radius: 6px; font-weight: 600; }
+.submit-row { border-radius: 8px; }
+:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+/* Petit écran : l'étiquette reste compacte pour ne pas déborder */
+@media (max-width: 767px) {
+  #header { padding: 10px 14px; }
+  #site-name .etiquette-admin { font-size: .7rem; padding: 3px 9px; }
+}
