@@ -4,3 +4,5 @@ data/*.sqlite
 data/*.sqlite-*
 uploads/*
 !uploads/.gitkeep
+mvp_SAADALI_WALID/data/stages.sqlite
+mvp_SAADALI_WALID/uploads/conventions/convention-stage-1-cycle-1.pdf
