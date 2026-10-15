@@ -10,12 +10,16 @@ tape l'adresse d'un espace qui n'est pas le sien reçoit un refus (erreur 403).
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from comptes import roles
+from comptes.decorateurs import role_requis
 from stages.models import ParametresEcole
 
+from . import assistant as assistant_ia
 from .aide import AIDE, INTRODUCTION
 
 # Description des espaces : adresse -> (rôle exigé, titre, phrase d'accueil)
@@ -88,6 +92,29 @@ def aide(request):
         "sections": sections,
         "contact": ParametresEcole.actuels().email_contact,
     })
+
+
+@login_required
+def assistant(request):
+    """Assistant IA : répond aux questions sur le site, à partir de l'aide du rôle de la personne.
+    Rien n'est conservé : seule la dernière question et sa réponse sont affichées (voir docs/15-IA.md)."""
+    echange = None
+    if request.method == "POST":
+        question = request.POST.get("question", "")
+        echange = {"question": assistant_ia.anonymiser(question), **assistant_ia.repondre(question, request.user)}
+    return render(request, "espaces/assistant.html", {
+        "echange": echange,
+        "ia_active": assistant_ia.lire_cle() is not None,
+        "modele": assistant_ia.modele(),
+        "contact": ParametresEcole.actuels().email_contact,
+    })
+
+
+@role_requis(roles.ETUDIANT)
+@require_POST
+def assistant_relecture(request):
+    """Relecture du sujet de stage (appelée par le bouton de la fiche). Renvoie du JSON ; n'enregistre rien."""
+    return JsonResponse(assistant_ia.relire_sujet(request.POST.get("sujet", ""), request.user))
 
 
 def protection_donnees(request):

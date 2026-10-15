@@ -299,6 +299,16 @@ label.creneau { display: inline-block; margin: 4px 12px 4px 0; font-weight: 400;
 .faq summary { cursor: pointer; font-weight: 600; color: var(--bleu-nuit); }
 .faq p { margin: 8px 0 0; color: var(--gris-texte); }
 
+/* Assistant IA et relecture du sujet (lot 9) */
+.assistant-form textarea { max-width: 640px; }
+.assistant-reponse { margin: 16px 0; max-width: 720px; border-left: 4px solid var(--bleu); }
+.assistant-reponse p { max-width: none; }
+.mention-ia { font-size: .88rem; color: var(--gris-texte); margin: 10px 0 0; }
+.relecture { margin: 8px 0 4px; }
+.relecture-resultat { margin-top: 8px; max-width: 640px; white-space: pre-line; }
+.relecture-resultat:not(:empty) { background: var(--bleu-clair); border-radius: var(--rayon-petit); padding: 10px 14px; }
+.relecture-resultat .mention-ia { white-space: normal; }
+
 /* ---------- 10. Page de connexion et pages sans menu ---------- */
 .accueil-fond {
   min-height: 100dvh; display: grid; place-items: center; padding: 24px; position: relative; overflow: hidden;

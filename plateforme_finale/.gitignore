@@ -25,3 +25,7 @@ app/uploads/*
 app/demo_uploads/
 app/sauvegardes/
 app/staticfiles/
+
+# Cle de l'assistant IA (Gemini) : JAMAIS dans le depot
+app/cle_gemini.txt
+cle_gemini.txt
