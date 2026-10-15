@@ -30,7 +30,7 @@ Ce que montrent tes notes : dépôt public `enzoberger-dev/SI-EIGSI-GESTION-DES-
 
 **Recommandation : un dossier à ton nom, envoyé sur une branche, puis une pull request.**
 1. Créer la branche `walid-plateforme` dans ce dépôt.
-2. Y ajouter un dossier **`plateforme_SAADALI_WALID/`** (même habitude que `mvp_SAADALI_WALID/`) contenant le code (`app/`), éventuellement les notes de conception (`docs/`) et le journal.
+2. Y ajouter un dossier **`plateforme_finale/`** (même habitude que `mvp_SAADALI_WALID/`) contenant le code (`app/`), éventuellement les notes de conception (`docs/`) et le journal.
 3. Ouvrir une **pull request** vers `main` : Enzo (administrateur du dépôt) voit exactement ce qui arrive, peut commenter, puis on **fusionne** avant la présentation pour que le prof le voie dans `main`.
 
 Pourquoi pas directement dans `main` ? Techniquement, tu pourrais (tu as le droit d'écrire, et un dossier à part ne peut pas entrer en conflit avec les autres). Mais `main` est ce que le prof lit et ce que les autres modifient : passer par une branche te donne un aperçu avant publication, un retour en arrière facile, et c'est la méthode du travail en équipe (voir [[10-Workflow-Claude-Code]]).
@@ -50,8 +50,8 @@ Tout ce qui est poussé est visible par tout le monde, et reste dans l'historiqu
 ```
 git clone https://github.com/enzoberger-dev/SI-EIGSI-GESTION-DES-STAGES-PFA-PFE.git   # copie le dépôt sur le PC
 git switch -c walid-plateforme                    # crée et ouvre ta branche
-# (copier le dossier plateforme_SAADALI_WALID/ dedans)
-git add plateforme_SAADALI_WALID                  # prépare les fichiers
+# (copier le dossier plateforme_finale/ dedans)
+git add plateforme_finale                  # prépare les fichiers
 git commit -m "feat: plateforme de gestion des stages (lots 0 à 8)"
 git push -u origin walid-plateforme               # envoie la branche sur GitHub
 # puis, sur github.com : bouton « Compare & pull request » → « Merge pull request »

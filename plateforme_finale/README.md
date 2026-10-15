@@ -15,7 +15,7 @@ Elle suit chaque stage de la **déclaration jusqu'à la soutenance** et remplace
 
 ## Essayer la démo (Windows, 5 minutes)
 1. Installer **Python 3.10 ou plus** (<https://www.python.org/downloads/>, cocher *Add python.exe to PATH*).
-2. Télécharger ce dépôt (*Code → Download ZIP*) ou le cloner, puis ouvrir le dossier `plateforme_SAADALI_WALID/app/`.
+2. Télécharger ce dépôt (*Code → Download ZIP*) ou le cloner, puis ouvrir le dossier `plateforme_finale/app/`.
 3. **Double-clic sur `LANCER_LA_DEMO.bat`**. Le premier lancement installe tout (2 à 5 minutes, Internet nécessaire) ; ensuite c'est instantané.
 4. Le navigateur s'ouvre sur <http://localhost:8000/>. Comptes fictifs `…@example.test`, **mot de passe commun : `Demo-EIGSI-2026`**.
 
@@ -28,7 +28,7 @@ Les comptes, les situations de chaque étudiant et un déroulé de présentation
 
 ## Organisation
 ```
-plateforme_SAADALI_WALID/
+plateforme_finale/
 ├── app/    le code (Django) : applications comptes, stages, soutenances, espaces
 └── docs/   la conception et les décisions (notes Obsidian)
 ```
