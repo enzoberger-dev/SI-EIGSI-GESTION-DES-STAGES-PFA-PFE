@@ -29,4 +29,4 @@ Sous Windows, avec Python 3.10 ou plus : ouvrir `plateforme_finale/app/` puis **
 | [`plateforme_finale/`](plateforme_finale/) | Version finale de la plateforme : code, conception, démonstration |
 
 ## Équipe
-SAADALI Walid · ADAWI Wael · BERGER Enzo · Wajih
+SAADALI Walid · ADAWI Wael · BERGER Enzo · SAMIT Wajih
