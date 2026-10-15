@@ -10,12 +10,16 @@ tape l'adresse d'un espace qui n'est pas le sien reçoit un refus (erreur 403).
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 
 from comptes import roles
+from comptes.decorateurs import role_requis
 from stages.models import ParametresEcole
 
+from . import assistant as assistant_ia
 from .aide import AIDE, INTRODUCTION
 
 # Description des espaces : adresse -> (rôle exigé, titre, phrase d'accueil)
@@ -88,6 +92,21 @@ def aide(request):
         "sections": sections,
         "contact": ParametresEcole.actuels().email_contact,
     })
+
+
+@login_required
+@require_POST
+def assistant_question(request):
+    """Assistant IA (bulle en bas à droite de chaque page) : répond à une question sur le site, à partir de l'aide
+    du rôle de la personne. Renvoie du JSON ; rien n'est enregistré (voir docs/15-IA.md)."""
+    return JsonResponse(assistant_ia.repondre(request.POST.get("question", ""), request.user))
+
+
+@role_requis(roles.ETUDIANT)
+@require_POST
+def assistant_relecture(request):
+    """Relecture du sujet de stage (appelée par le bouton de la fiche). Renvoie du JSON ; n'enregistre rien."""
+    return JsonResponse(assistant_ia.relire_sujet(request.POST.get("sujet", ""), request.user))
 
 
 def protection_donnees(request):

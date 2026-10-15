@@ -9,6 +9,7 @@ Elle suit chaque stage de la **déclaration jusqu'à la soutenance** et remplace
 - l'**encadrant** (4e et 5e année) ou le **coordinateur** (1re à 3e année) valide ou refuse la fiche, avec un motif ;
 - le **Career Center** affecte les encadrants, génère les conventions (PDF), vérifie les signatures, suit les livrables, importe les listes (WebAurion, Moodle) et organise les soutenances ;
 - le **jury** indique ses disponibilités et saisit le PV et la note ;
+- un **assistant IA** (Google Gemini) qui répond aux questions sur l'utilisation du site selon le rôle, et relit le sujet de stage avant la soumission. **L'IA propose, l'humain décide** ; sans clé ou sans Internet, un mode de secours prend le relais ([`docs/15-IA.md`](docs/15-IA.md)) ;
 - des **rappels et relances automatiques** par e-mail ; des **droits par rôle** ; la protection des données (loi 09-08).
 
 23 user stories (17 *Must*, 3 *Should*, 3 *Could*) → [`docs/03-Besoins-et-backlog.md`](docs/03-Besoins-et-backlog.md).
@@ -23,7 +24,7 @@ Les comptes, les situations de chaque étudiant et un déroulé de présentation
 
 ## Technique
 - **Django 5.2** (pages rendues par le serveur), SQLite en développement, PostgreSQL en ligne, PDF avec ReportLab, aucune bibliothèque externe côté navigateur.
-- **275 tests automatiques** : `cd app` puis `.venv\Scripts\python manage.py test`.
+- **296 tests automatiques** : `cd app` puis `.venv\Scripts\python manage.py test`.
 - Documentation du code et des commandes : [`app/README.md`](app/README.md). Mise en ligne : [`docs/12-Mise-en-ligne.md`](docs/12-Mise-en-ligne.md).
 
 ## Organisation

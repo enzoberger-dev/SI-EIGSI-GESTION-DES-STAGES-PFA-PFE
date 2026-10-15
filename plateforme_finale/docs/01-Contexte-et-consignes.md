@@ -14,7 +14,7 @@ Retour : [[Accueil]]
 | **SAADALI Walid** | Architecte Processus Métier : BPMN 2.0 AS-IS et TO-BE |
 | **ADAWI Wael** | Consultant Analyste & Lead Besoins : entretien terrain, analyse stratégique, matrice MoSCoW |
 | **BERGER Enzo** | Data & Governance Officer : KPI SMART, administration du dépôt GitHub, assemblage du livrable |
-| Wajih (à confirmer) | 4e membre probable (branche `wajih-démo`) ; le rapport S1 ne liste que 3 noms |
+| **SAMIT Wajih** | 4e membre (branche `wajih-démo`) ; le rapport S1 ne liste que 3 noms |
 
 Le groupe compte 4 personnes alors que la consigne parle de 3 maximum : **le prof a accepté le 4e membre** (voir [[08-Decisions-ouvertes]]).
 En séance 2, Walid a fait le BPMN TO-BE, le modèle de données (MCD et dictionnaire) et mis en forme le rapport ; l'architecture a été reprise à partir du schéma du tableau blanc du groupe.

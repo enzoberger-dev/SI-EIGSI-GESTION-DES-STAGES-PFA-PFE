@@ -26,3 +26,8 @@ ASTUCES
   - Fichier de scan pret pour la demo : exemples\scan_convention_exemple.pdf
   - Repartir de zero apres des essais : supprimer demo.sqlite3, puis relancer LANCER_LA_DEMO.bat
   - Page blanche ou ancien aspect : Ctrl + F5.
+
+ASSISTANT IA (facultatif)
+  - Sans cle : l'assistant (bulle en bas a droite) et la relecture du sujet marchent en "mode demonstration".
+  - Pour la vraie IA (Gemini) : copier cle_gemini.txt (une ligne : la cle) dans ce dossier, relancer la demo.
+    Internet est alors necessaire. Supprimer ce fichier apres la presentation. Ne saisir que des donnees fictives.
