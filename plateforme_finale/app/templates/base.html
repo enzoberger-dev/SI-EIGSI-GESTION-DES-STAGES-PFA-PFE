@@ -65,6 +65,11 @@
       </div>
     </div>
   {% endblock %}
+  {% if user.is_authenticated %}
+    {# Assistant IA : bulle flottante en bas à droite, sur toutes les pages une fois connecté (lot 9) #}
+    {% include "espaces/_assistant_widget.html" %}
+    <script src="{% static 'js/assistant.js' %}" defer></script>
+  {% endif %}
   <script src="{% static 'js/eigsi.js' %}" defer></script>
   {% block scripts %}{% endblock %}
 </body>

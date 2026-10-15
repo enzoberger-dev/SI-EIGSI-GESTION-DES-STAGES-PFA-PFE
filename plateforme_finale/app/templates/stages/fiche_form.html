@@ -27,7 +27,7 @@
           {% if champ.name == "sujet" %}
             {# Relecture par l'assistant (lot 9) : le bouton n'apparaît que si le JavaScript fonctionne ; rien n'est enregistré #}
             <div class="relecture" data-url="{% url 'assistant_relecture' %}" data-champ="{{ champ.id_for_label }}">
-              <button type="button" class="relecture-bouton" hidden>Faire relire mon sujet par l'assistant</button>
+              <button type="button" class="bouton relecture-bouton" hidden>Faire relire mon sujet par l'assistant</button>
               <div class="relecture-resultat" role="status" aria-live="polite"></div>
             </div>
           {% endif %}
@@ -42,4 +42,3 @@
 
   <p class="retour"><a href="{% url 'mon_stage' %}">← Retour à mon stage</a></p>
 {% endblock %}
-{% block scripts %}{% load static %}<script src="{% static 'js/assistant.js' %}" defer></script>{% endblock %}

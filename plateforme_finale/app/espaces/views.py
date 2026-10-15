@@ -95,19 +95,11 @@ def aide(request):
 
 
 @login_required
-def assistant(request):
-    """Assistant IA : répond aux questions sur le site, à partir de l'aide du rôle de la personne.
-    Rien n'est conservé : seule la dernière question et sa réponse sont affichées (voir docs/15-IA.md)."""
-    echange = None
-    if request.method == "POST":
-        question = request.POST.get("question", "")
-        echange = {"question": assistant_ia.anonymiser(question), **assistant_ia.repondre(question, request.user)}
-    return render(request, "espaces/assistant.html", {
-        "echange": echange,
-        "ia_active": assistant_ia.lire_cle() is not None,
-        "modele": assistant_ia.modele(),
-        "contact": ParametresEcole.actuels().email_contact,
-    })
+@require_POST
+def assistant_question(request):
+    """Assistant IA (bulle en bas à droite de chaque page) : répond à une question sur le site, à partir de l'aide
+    du rôle de la personne. Renvoie du JSON ; rien n'est enregistré (voir docs/15-IA.md)."""
+    return JsonResponse(assistant_ia.repondre(request.POST.get("question", ""), request.user))
 
 
 @role_requis(roles.ETUDIANT)

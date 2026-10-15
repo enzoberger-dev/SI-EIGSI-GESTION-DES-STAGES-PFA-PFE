@@ -64,7 +64,7 @@ urlpatterns = [
     # Page publique d'information sur les données personnelles (loi 09-08)
     path("protection-des-donnees/", espaces_views.protection_donnees, name="protection_donnees"),
     path("aide/", espaces_views.aide, name="aide"),   # à propos et aide, selon le rôle (après connexion)
-    path("assistant/", espaces_views.assistant, name="assistant"),   # assistant IA (lot 9)
+    path("assistant/question/", espaces_views.assistant_question, name="assistant_question"),   # assistant IA (lot 9)
     path("assistant/relecture/", espaces_views.assistant_relecture, name="assistant_relecture"),
 
     # Accueil et espaces par rôle

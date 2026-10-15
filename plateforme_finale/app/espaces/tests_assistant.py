@@ -155,30 +155,37 @@ class RelectureTests(BaseTest):
 
 
 class PagesTests(BaseTest):
-    def test_page_reservee_aux_personnes_connectees(self):
-        self.assertEqual(self.client.get(reverse("assistant")).status_code, 302)
+    def test_route_reservee_aux_personnes_connectees_et_en_post(self):
+        self.assertEqual(self.client.post(reverse("assistant_question"), {"question": "x"}).status_code, 302)
+        self.client.force_login(utilisateur("p0@example.test", roles.ETUDIANT))
+        self.assertEqual(self.client.get(reverse("assistant_question")).status_code, 405)
 
-    def test_page_en_mode_demonstration_sans_cle(self):
+    def test_reponse_json_avec_mode_demonstration_sans_cle(self):
         self.sans_cle()
         self.client.force_login(utilisateur("p1@example.test", roles.ETUDIANT))
-        self.assertContains(self.client.get(reverse("assistant")), "Mode démonstration")
+        reponse = self.client.post(reverse("assistant_question"), {"question": "Où déposer le scan de ma convention ?"})
+        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.json()["mode"], "secours")
+        self.assertIn("scan", reponse.json()["texte"].lower())
 
-    def test_question_et_reponse_affichees_avec_mention(self):
+    def test_reponse_json_avec_ia(self):
         self.avec_ia("Voici la réponse.")
         self.client.force_login(utilisateur("p2@example.test", roles.ETUDIANT))
-        page = self.client.post(reverse("assistant"), {"question": "Où déposer le scan ?"})
-        self.assertContains(page, "Voici la réponse.")
-        self.assertContains(page, "Généré par une IA")
+        reponse = self.client.post(reverse("assistant_question"), {"question": "Où déposer le scan ?"})
+        self.assertEqual(reponse.json(), {"texte": "Voici la réponse.", "mode": "ia", "raison": ""})
 
-    def test_la_reponse_de_l_ia_n_est_jamais_interpretee_comme_du_html(self):
-        self.avec_ia("<script>alert('x')</script>")
-        self.client.force_login(utilisateur("p3@example.test", roles.ETUDIANT))
-        page = self.client.post(reverse("assistant"), {"question": "test"})
-        self.assertNotContains(page, "<script>alert")
-
-    def test_lien_dans_le_menu(self):
+    def test_la_bulle_est_sur_toutes_les_pages_une_fois_connecte_seulement(self):
+        self.assertNotContains(self.client.get(reverse("connexion")), 'id="assistant-widget"')
         self.client.force_login(utilisateur("p4@example.test", roles.ETUDIANT))
-        self.assertContains(self.client.get(reverse("accueil")), 'href="/assistant/"')
+        for page in ("accueil", "aide"):
+            self.assertContains(self.client.get(reverse(page)), 'id="assistant-widget"')
+
+    def test_aucun_nom_de_modele_d_ia_a_l_ecran(self):
+        self.client.force_login(utilisateur("p7@example.test", roles.ETUDIANT))
+        for page in ("accueil", "aide"):
+            html = self.client.get(reverse(page)).content.decode().lower()
+            self.assertNotIn("gemini", html)
+            self.assertNotIn("google", html)
 
     def test_relecture_reservee_aux_etudiants_et_en_post(self):
         self.sans_cle()

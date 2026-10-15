@@ -30,8 +30,7 @@ def menu(request):
         if not liens:
             liens = [lien(titre, reverse("espace-" + cle))]
         groupes.append({"titre": titre, "liens": liens})
-    groupes.append({"titre": "Aide", "liens": [lien("À propos et aide", reverse("aide")),
-                                               lien("Assistant", reverse("assistant"))]})
+    groupes.append({"titre": "Aide", "liens": [lien("À propos et aide", reverse("aide"))]})
     if utilisateur.is_staff:
         groupes.append({"titre": "Administration", "liens": [lien("Administration du site", reverse("admin:index"))]})
 
