@@ -49,7 +49,7 @@ Fil rouge : *avant, tout passait par des e-mails et des saisies à la main ; mai
 8. **Conclusion (30 s)** — 23 user stories couvertes, 296 tests automatiques, protection des données (loi 09-08). **Reste** : hébergement et serveur d'e-mails (avec le service informatique), charte graphique officielle.
 
 ## 3 bis. La clé de l'IA sur le PC de la démo
-L'assistant marche **sans clé** (mode démonstration). Pour montrer la vraie IA : copier le fichier `cle_gemini.txt` (une ligne, la clé) dans le dossier `app/` du PC de démo, relancer, et **le supprimer après la présentation** (puis supprimer la clé dans Google AI Studio). Ce fichier n'est **jamais** dans l'archive ni sur GitHub. Il faut Internet pendant la démo pour la vraie IA. N'utiliser que des données fictives.
+L'assistant marche **sans clé** (mode démonstration). Pour montrer la vraie IA : copier le fichier `cle_gemini.txt` (une ligne, la clé) dans le dossier de la démo, **à côté de `manage.py` et de `LANCER_LA_DEMO.bat`** (dans le dépôt, c'est `plateforme_finale/app/` ; dans l'archive ZIP, c'est le dossier racine), relancer, et **le supprimer après la présentation** (puis supprimer la clé dans Google AI Studio). Ce fichier n'est **jamais** dans l'archive ni sur GitHub. Il faut Internet pendant la démo pour la vraie IA. N'utiliser que des données fictives.
 
 ## 4. Si quelque chose ne marche pas
 | Problème | Solution |
