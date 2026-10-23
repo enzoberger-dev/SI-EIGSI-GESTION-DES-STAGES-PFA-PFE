@@ -16,7 +16,10 @@ Une plateforme où **chacun voit où en est le dossier et ce qu'il doit faire** 
 
 ## Essayer la version finale
 La version finale se trouve dans [`plateforme_finale/`](plateforme_finale/) (Django, plus de 270 tests automatiques).
-Sous Windows, avec Python 3.10 ou plus : ouvrir `plateforme_finale/app/` puis **double-clic sur `LANCER_LA_DEMO.bat`**. Le navigateur s'ouvre avec des comptes fictifs. Le détail est dans [`plateforme_finale/README.md`](plateforme_finale/README.md).
+Sous Windows, avec Python 3.10 ou plus : ouvrir `plateforme_finale/app/` puis **double-clic sur `LANCER_LA_DEMO.bat`**. Le navigateur s'ouvre avec des comptes fictifs. Le détail est dans [`plateforme_finale/README.md`](plateforme_finale/README.md). L'assistant IA est **facultatif** : sans clé API, il marche en mode démonstration ; pour la vraie IA, voir [comment brancher sa clé](plateforme_finale/README.md#assistant-ia--brancher-sa-propre-clé-facultatif).
+
+[![Vidéo de présentation de la plateforme (22 s)](Demo/plateforme_finale_presentation.jpg)](Demo/plateforme_finale_presentation.mp4)
+*▶ Cliquer sur l'image pour voir la vidéo de présentation (22 secondes).*
 
 ## Contenu du dépôt
 | Élément | Contenu |
@@ -24,7 +27,7 @@ Sous Windows, avec Python 3.10 ou plus : ouvrir `plateforme_finale/app/` puis **
 | `S1_Rapport_Gestion_des_stages_PFE_PFA.pdf` | Séance 1 — cadrage : SWOT, alignement stratégique, BPMN AS-IS, matrice MoSCoW, KPI SMART |
 | `S2_Rapport_Gestion_des_stages_PFE_PFA.pdf`, `BPMN_TO-BE.pdf` | Séance 2 — conception : user stories, maquettes, modèle de données, architecture, BPMN TO-BE |
 | `mvp_SAADALI_WALID/` | Séance 3 — MVP de démonstration (VS Code et GitHub Copilot, mode Auto) |
-| `Demo/` | Vidéos de démonstration des MVP |
+| `Demo/` | Vidéos de démonstration des MVP et vidéo de présentation de la plateforme finale |
 | `démo wajih.zip` | MVP de Wajih |
 | [`plateforme_finale/`](plateforme_finale/) | Version finale de la plateforme : code, conception, démonstration |
 

@@ -10,16 +10,24 @@ POUR LANCER LA DEMO
   4. Pour arreter : fermer la fenetre noire.
 
 COMPTES (fictifs) - le mot de passe est le meme pour tous :  Demo-EIGSI-2026
-  nadia.alaoui@example.test       Career Center (pilote tout)
-  adam.elamrani@example.test      Etudiant 3e (convention signee)
-  imane.bouazza@example.test      Etudiante 3e (fiche soumise)
-  yasmine.benali@example.test     Etudiante 5e (doit deposer son scan)
-  reda.lamrani@example.test       Etudiant 5e (convention a generer)
-  kenza.alami@example.test        Etudiante 5e (soutenance planifiee)
-  mehdi.ouazzani@example.test     Etudiant 5e (PV a valider)
-  karim.idrissi@example.test      Coordinateur 3e (valide les fiches)
-  sara.bennani@example.test       Encadrante et jury
-  (liste complete et deroule de la presentation : docs/13-Demo-presentation.md du depot)
+  Career Center (pilote tout)
+    nadia.alaoui@example.test       tableau de bord, conventions, soutenances, administration
+  Etudiants 3e annee
+    adam.elamrani@example.test      convention signee, 1 livrable rendu
+    imane.bouazza@example.test      fiche SOUMISE : le coordinateur doit la valider
+    hamza.tahiri@example.test       fiche en BROUILLON : pour montrer la relecture du sujet par l'IA
+    nour.benjelloun@example.test    n'a pas encore declare de stage
+  Etudiants 5e annee
+    yasmine.benali@example.test     convention envoyee : elle depose son scan
+    salma.cherkaoui@example.test    fiche refusee avec un motif
+    reda.lamrani@example.test       stage valide : le Career Center genere la convention
+    mehdi.ouazzani@example.test     soutenance passee : PV a valider
+    kenza.alami@example.test        soutenance planifiee : le jury saisit le PV
+  Validation et jury
+    karim.idrissi@example.test      coordinateur 3e : valide les fiches de 3e annee
+    sara.bennani@example.test       encadrante (5e) et jury
+    omar.tazi@example.test          encadrant et jury
+  (deroule de la presentation : docs/13-Demo-presentation.md du depot GitHub)
 
 ASTUCES
   - Changer de compte vite : ouvrir une fenetre de navigation privee.
@@ -29,5 +37,14 @@ ASTUCES
 
 ASSISTANT IA (facultatif)
   - Sans cle : l'assistant (bulle en bas a droite) et la relecture du sujet marchent en "mode demonstration".
-  - Pour la vraie IA (Gemini) : copier cle_gemini.txt (une ligne : la cle) dans ce dossier, relancer la demo.
+  - Pour la vraie IA (Gemini) :
+      1. Se connecter avec un compte Google sur https://aistudio.google.com/apikey et creer une cle API (gratuit).
+         Toute cle Gemini convient : celle de Walid, la votre, ou celle d'un autre compte.
+      2. Creer un fichier texte nomme EXACTEMENT  cle_gemini.txt  dans CE dossier, a cote de manage.py et de
+         LANCER_LA_DEMO.bat (le dossier qui contient ce fichier LISEZ-MOI). Il ne contient qu'une ligne : la cle.
+      3. Fermer la fenetre noire s'il y en a une, puis relancer LANCER_LA_DEMO.bat.
     Internet est alors necessaire. Supprimer ce fichier apres la presentation. Ne saisir que des donnees fictives.
+  - PIEGE FREQUENT : Windows cache les extensions. Un fichier cree avec le Bloc-notes peut s'appeler en realite
+    cle_gemini.txt.txt et ne sera pas lu. Dans l'Explorateur : onglet "Affichage" > cocher "Extensions de noms
+    de fichiers", puis verifier que le nom est bien cle_gemini.txt.
+  - La cle est personnelle : elle n'est jamais dans le depot GitHub (le fichier est ignore par Git). Ne la partagez pas.

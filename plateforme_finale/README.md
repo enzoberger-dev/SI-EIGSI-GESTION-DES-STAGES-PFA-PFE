@@ -22,6 +22,20 @@ Elle suit chaque stage de la **déclaration jusqu'à la soutenance** et remplace
 
 Les comptes, les situations de chaque étudiant et un déroulé de présentation sont dans [`docs/13-Demo-presentation.md`](docs/13-Demo-presentation.md). La démo utilise sa propre base (`demo.sqlite3`) : aucune vraie donnée.
 
+[![Vidéo de présentation de la plateforme (22 s)](../Demo/plateforme_finale_presentation.jpg)](../Demo/plateforme_finale_presentation.mp4)
+*▶ Cliquer sur l'image pour voir la vidéo de présentation (22 secondes).*
+
+## Assistant IA : brancher sa propre clé (facultatif)
+**Sans clé, tout fonctionne** : l'assistant et la relecture du sujet répondent en « mode démonstration » à partir des textes d'aide du site. La **vraie IA** (Google Gemini) demande une clé API, qui est **personnelle** : elle n'est donc **jamais** dans ce dépôt (le fichier est exclu par `.gitignore`). Sur un nouvel ordinateur :
+
+1. **Créer une clé** avec un compte Google : <https://aistudio.google.com/apikey> → *Create API key* (gratuit). Toute clé Gemini convient : celle de Walid, la vôtre, ou celle d'un autre compte.
+2. **Créer un fichier texte nommé exactement `cle_gemini.txt`** dans le dossier `plateforme_finale/app/`, à côté de `manage.py` et de `LANCER_LA_DEMO.bat`. Il ne contient qu'une **ligne : la clé**.
+3. **Relancer** `LANCER_LA_DEMO.bat`. Internet est alors nécessaire pour l'IA.
+
+> ⚠️ **Piège fréquent sous Windows** : les extensions sont cachées, donc un fichier créé avec le Bloc-notes peut s'appeler en réalité `cle_gemini.txt.txt` et ne sera pas lu. Dans l'Explorateur : *Affichage* → cocher *Extensions de noms de fichiers*, puis vérifier le nom.
+
+Autre possibilité : définir la variable d'environnement `GEMINI_API_KEY` à la place du fichier. Détails, protection des données et mode de secours : [`docs/15-IA.md`](docs/15-IA.md).
+
 ## Technique
 - **Django 5.2** (pages rendues par le serveur), SQLite en développement, PostgreSQL en ligne, PDF avec ReportLab, aucune bibliothèque externe côté navigateur.
 - **296 tests automatiques** : `cd app` puis `.venv\Scripts\python manage.py test`.
